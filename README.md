@@ -5,7 +5,11 @@ We will be simulating a last level cache for a new processor that can be used by
 
 
 for the MESI protocol, we will have
+
 00 = invalid
+
 01 = exclusive
+
 10 = shared
+
 11 = modified
