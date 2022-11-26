@@ -1,5 +1,6 @@
 module test_case;
 enum{Pr_Rd,Pr_Wr};
+enum{M,E,S,I};
 integer mesi;
 integer curr_state;
 integer next_state;
@@ -42,9 +43,11 @@ case(mesi)
 			curr_state = I;
 			if(Pr_Rd) begin
 				//if other cache have valid copy 
-				// curr_state = S;
+				//ask Getsnoopresult fucntion if it's hit ot miss
+				if(HIT or HITM)begin
+					curr_state = S;
 				else:
-				curr_state = E;
+					curr_state = E;
 				end
 			else if(Pr_Wr)
 				curr_state = M;
