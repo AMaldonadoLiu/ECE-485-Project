@@ -6,11 +6,7 @@ string retrieved_file;
 integer debug;
 reg flag = 0;
 reg[63:0] read_address;
-
-
-
-
-
+wire [9 + i_size - c_size + a_size - d_size - 1: 0] tag_array[2 ** 15];
 
 
 
@@ -34,6 +30,11 @@ if(data_file == 0)
 	$display("Unable to open file");
 	$finish;
 	end
+if($test$plusargs ("silent"))
+	$display("silent mode");
+else
+	$display("normal mode");
+
 
 while(!$feof(data_file))
 	begin
@@ -63,10 +64,6 @@ while(!$feof(data_file))
 		$finish;
 		end
 		
-    	if($test$plusargs ("silent"))
-    	$display("silent mode");
-   	if($test$plusargs("normal"))
-    	$display("normal mode");
 
 
 	end
