@@ -4,3 +4,6 @@
 4. check that we can select the correct one to evict
 5. check that mesi updates correctly
 6. enter differing instructions to test the miss and hits, and make sure it all works together.
+
+
+MESI test cases (put them in)
