@@ -1,4 +1,16 @@
 module top;
+
+//using bits
+parameter integer i_size = 32;
+parameter integer c_size = 24;
+parameter integer d_size = 6;
+parameter integer protocol = 2;
+
+//this one isnt in bits
+parameter integer a_size = 8;
+
+
+
 integer data_file;
 integer valid_data;
 integer data_command;
@@ -6,7 +18,7 @@ string retrieved_file;
 integer debug;
 reg flag = 0;
 reg[63:0] read_address;
-wire [9 + i_size - c_size + a_size - d_size - 1: 0] tag_array[2 ** 15];
+reg [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
 
 
 
