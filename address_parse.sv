@@ -1,9 +1,9 @@
 module address_parse(address, tag, index, byte_select);
 //parameters to be changed depending on the architecture (in bits used to represent them)
-parameter instruction_size = 64;
-parameter data_lines = 6;
-parameter capacity = 14;
-parameter associativity = 3;
+parameter integer instruction_size = 64;
+parameter integer data_lines = 6;
+parameter integer capacity = 14;
+parameter integer associativity = 3;
 
 //the defined size of an instruction
 input [instruction_size - 1: 0]address;
