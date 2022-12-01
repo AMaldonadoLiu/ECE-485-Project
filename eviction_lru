@@ -1,0 +1,11 @@
+Not yet completed as of 11/30
+
+module eviction_lru(tag_array, evict_num);
+
+parameter associativity = 4;
+
+input [1:0]tag_array[4];
+
+output [1:0]evict_num;
+
+endmodule
