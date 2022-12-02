@@ -67,7 +67,7 @@ while(!$feof(data_file))
 	if(valid_data != 0)
 		begin
 		if(debug == 1)
-			$displayh("Read address: ", read_address);
+			$display("Read address: 0x%8h ", read_address);
 		//send data into modules
 		end
 	else
