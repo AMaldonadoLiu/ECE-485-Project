@@ -68,6 +68,7 @@ while(!$feof(data_file))
 		begin
 		if(debug == 1)
 			$display("Read address: 0x%8h ", read_address);
+			busOps(data_command,read_address);
 		//send data into modules
 		end
 	else
@@ -83,3 +84,22 @@ $fclose(data_file);
 end
 	
 endmodule
+//Function to dispaly BusOperation
+task busOps(input reg [1:0]data_command,input reg [31:0]address);
+	// string address ="data";
+	//$display("data receive %d",address);
+	enum{READ=0,WRITE,L1_READ,SNOOP_INVALIDATE,SNOOPED_RD,SNOOP_WR,
+		SNOOP_RDWITM,CLR,PRINT}command;
+	case(data_command)
+		READ: $display("Busop: Read, address 0x%8h",address);
+		WRITE:$display("Busop: Write, address 0x%8h",address);
+		L1_READ:$display("Busop: L1_Read, address 0x%8h",address);
+		SNOOP_INVALIDATE:$display("Busop: SNOOP_INVALIDATE, address 0x%8h",
+		address);
+		SNOOPED_RD:$display("Busop: SNOOP_RD, address 0x%8h",address);
+		SNOOP_WR:$display("Busop: SNOOP_WR, address 0x%8h",address);
+		SNOOP_RDWITM:$display("Busop: SNOOP_RDWITM, address 0x%8h",address); //Read with intent to modify
+		CLR:$display("Busop: clear_cach, address 0x%8h",address);
+		PRINT:$display("Busop: Print, address 0x%8h",address);
+	endcase
+endtask
