@@ -29,14 +29,21 @@ function automatic left_or_right(int set);
     int way;
     for (way = 0; way < a_size; way = way + 1)
 	if (t_array[set][way] === n)
-	    e_num = way;
+	    i = way;
 	    return(way);
 	    
     for (way = 0; way < a_size; way = way + 1)	
 	if (t_array[set][way] === n+1)
-	    e_num = way;
+	    i = way;
 	    return(way);
  
 endfunction
+initial
+    begin
+    	if (e_num !== i)
+	    $display("Evicted: ", i);
+	else if (e_num === i)
+	    $display("No eviction. e_num is: ", e_num);
+
+    end
 endmodule
-		
