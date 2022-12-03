@@ -1,3 +1,5 @@
+import mypkg::*;
+
 module top;
 
 //using bits
@@ -21,7 +23,7 @@ reg[63:0] read_address;
 reg [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
 
 
-
+address_parse inst(read_address, tag, index, byte_select);
 initial
 begin
 //look for file name
