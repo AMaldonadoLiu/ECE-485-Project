@@ -9,7 +9,12 @@ integer k;
 integer l;
 integer j;
 integer m;
+
 integer index;
+integer set;
+integer way;
+integer n;
+
 reg [7:0]total_count; // 7 bits (count from 0-128)
 
 wire [1:0]e_num;
@@ -20,72 +25,18 @@ eviction_lru #(.associativity(a_size)) t1(.tag_array(t_array), .evict_num(e_num)
 //going left if 0. going right if 1.
 
 
-function automatic go_right(index);
-   begin
-	if(t_array[index] === 1 && ((2*index)+2)<=total_count)
-		return (2*index)+2;
-        else
-		return -1;
-	end
+function automatic left_or_right(int set);
+    int way;
+    for (way = 0; way < a_size; way = way + 1)
+	if (t_array[set][way] === n)
+	    e_num = way;
+	    return(way);
+	    
+    for (way = 0; way < a_size; way = way + 1)	
+	if (t_array[set][way] === n+1)
+	    e_num = way;
+	    return(way);
+ 
 endfunction
-
-function automatic go_left(index);
-    begin
-       	if(t_array[index] === 0 && ((2*index)+1)<=total_count)
-        	return (2*index)+1;
-        else
-        	return -1;
-	end
-endfunction
-
-initial
-    begin
-        for (index = 0; index < a_size; index = index + 1)
-            begin
-        	if (index === 0)
-            	    index =  (2 * index) + 1;
-		    //return go_left(index);
-        	else if (index === 1)
-            	    index = (2 * index) + 2;
-		    //return go_right(index);
-	end
-    end
-
-
-
-
-//still need this portion?
-initial
-    begin
-        for (i = 0; i < a_size; i = i + 1)
-	    begin
-		t_array[0] = i;
-		for (j = 0; j < 4; j = j + 1)
-		    begin
-		        if (j !== i)
-			    t_array[1] = j;
-			for (k = 0; k < 4; k = k + 1)
-			    begin
-				if (k !== j && k !== i)
-			    	    t_array[2] = k;
-				for (l = 0; l < 4; l = l +1)
-				    begin
-					if (l !== i && l !== j && l !== k)
-					    t_array[3] = l;
-					if (i == 3)
-					    m = 0;
-					else if (j == 3)
-					    m = 1;
-					else if (k == 3)
-					    m = 2;
-					else if (l == 3)
-					    m = 3;
-					if (e_num !== m)
-					    $display(i," ",j," " ,k, " ", l);
-					    $display("Evicted: ", e_num); 
-				end
-			end
-		end
-	end
-    end
 endmodule
+		
