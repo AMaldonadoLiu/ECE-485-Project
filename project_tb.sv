@@ -69,6 +69,13 @@ while(!$feof(data_file))
 		if(debug == 1)
 			$display("Read address: 0x%8h ", read_address);
 			busOps(data_command,read_address);
+			
+			$display("tag: %16b",tag);
+			$display("index: %b",index);
+			$display("byteselect: %b",byte_select);
+			$display ("------------cacheStruct---------------");
+			store_cache(tag,index,byte_select);
+
 		//send data into modules
 		end
 	else
@@ -103,4 +110,21 @@ task busOps(input reg [3:0]data_command,input reg [31:0]address);
 		PRINT:$display("Busop: Print, address 0x%8h",address);
 		default:$display("Busop: INVALID CMD!! %d 0x%8h",data_command,address);
 	endcase
+endtask
+
+task store_cache(int tag_inf,int index_inf,int bit_select); //store data from the file
+
+  //parameter integer i=0;
+    for(int i=0;i<12;i++)
+      begin
+        cache_data.tag_info[i] = tag_inf;
+        cache_data.index_info[i] =index_inf;
+ 
+      end
+    for(int i=0;i<9;i++)
+      begin
+        $display ("tag in cache %b", cache_data.tag_info[i]);
+        $display ("index = %b",cache_data.index_info[i]);
+ 
+      end
 endtask
