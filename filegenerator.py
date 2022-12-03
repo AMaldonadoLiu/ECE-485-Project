@@ -1,6 +1,13 @@
+#author Bendjy Faurestal
+#generate a file with custom command(busOps) and 32 bit hex data
+import os
 import secrets
 import random
 from decimal import Decimal
+
+
+cwd = os.getcwd()
+nameOfFile = "tracefileLRU.txt"
 busOps = 0;
 numLines= 13
 n=0x17 
@@ -15,13 +22,14 @@ def randhex():
 def tagbits():
     return str(tagBitsVal)
      
-
-file = open("tracefileLRU.txt", "w") 
+print("Current working directory:",cwd)
+filename = cwd+'/' + nameOfFile
+file = open(filename,"w") 
 for i in range(1,numLines):
-    hex32bit = randhex() + randhex() +tagbits() + randhex1() + randhex1_2()
+    hex32bit = tagbits() + randhex1() + randhex() + randhex() +  randhex1_2()
     file.write(str(busOps)  )
     file.write("  ")
     file.write(hex32bit)
     file.write("\n")
-print(hex32bit)
+print("file successfully written")
 file.close()
