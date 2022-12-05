@@ -25,7 +25,7 @@ inout common;
 output hit;
 output [1:0] bus_op_out; //bus operation commands 
 output [1:0] snoop_result; //update snoop_result 
-output [1:0] L2_L1; // ??
+	output [1:0] L2_L1; // this is for communication between the L1 and L2
 
 
 
