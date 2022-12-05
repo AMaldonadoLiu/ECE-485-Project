@@ -4,7 +4,8 @@ module hit_miss(tag, /*index,*/ tag_array, MESI, hit, miss);
 parameter integer i_size = 32; //instruction size
 parameter integer c_size = 24; // cache capacity
 parameter integer d_size = 6; //number of bit for byte_select
-parameter integer protocol = 2; // ??
+parameter integer protocol = 2; // this is the number of bits required for the protocol
+	
 
 //this one is in bits
 parameter integer a_size = 8;
