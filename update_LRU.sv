@@ -40,7 +40,7 @@ begin
 			begin
 				a = 2 * a + 2; // go right
 			end
-			b = b + 1; //increment (b) for so it can also go to the next block value (line 33)?
+			b = b + 1; //increment (b) for so we can select the next 1 or 0 for the next.
 		end
 			
 		else //if the value is not true (line 30), 
