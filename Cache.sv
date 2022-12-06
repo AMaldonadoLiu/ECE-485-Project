@@ -13,7 +13,7 @@ parameter integer protocol = 2;
 
 //this one is in bits
 parameter integer a_size = 8;
-parameter integer max_array = a_size + (protocol + i_size - c_size + $logc2(a_size) - d_size) * a_size - 2;
+	parameter integer max_array = a_size + (protocol + i_size - c_size + $clog2(a_size) - d_size) * a_size - 2;
 
 input integer command; // command from trace file 
 input [i_size - 1 : 0] instruction;
