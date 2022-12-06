@@ -1,49 +1,70 @@
 module eviction_lru_tb;
 
-//parameters for memory size and organization (in bits used to represent them)
-parameter integer a_size = 4;
-
-reg [1:0]t_array[4];
+parameter integer associativity = 8;
 integer i;
-integer k;
-integer l;
 integer j;
-integer m;
+integer k;
+integer a = 0;
 
-integer index;
-integer set;
-integer way;
-integer n;
+integer debug = 0;
+//size of output and inputs
+reg [associativity - 2 : 0] returned;
+reg [associativity - 2 : 0] LRU_bits;
+reg [$clog2(associativity) - 1 : 0] block_select;
+reg [associativity - 2 : 0] check = 0;
+reg [associativity - 2 : 0] temp = 0;
 
-reg [7:0]total_count; // 7 bits (count from 0-128)
-
-wire [1:0]e_num;
-
-//instantiate the module using out memory and organization inputs
-eviction_lru #(.associativity(a_size)) t1(.tag_array(t_array), .evict_num(e_num)); 
-
-//going left if 0. going right if 1.
+eviction_lru #(.associativity(associativity)) test(block_select, LRU_bits, returned);
 
 
-function automatic left_or_right(int set);
-    int way;
-    for (way = 0; way < a_size; way = way + 1)
-	if (t_array[set][way] === n)
-	    i = way;
-	    return(way);
-	    
-    for (way = 0; way < a_size; way = way + 1)	
-	if (t_array[set][way] === n+1)
-	    i = way;
-	    return(way);
- 
-endfunction
 initial
-    begin
-    	if (e_num !== i)
-	    $display("Evicted: ", i);
-	else if (e_num === i)
-	    $display("No eviction. e_num is: ", e_num);
+begin
+	if($test$plusargs ("debug")) //checking if debug was called in the terminal
+		debug = 1;
+	for(i = 0; i < associativity; i = i + 1)
+	begin
+		block_select = i; // set initial branch (very top of LRU tree) to the value of i
+		for(j = 0; j < 2 ** (associativity-1); j = j + 1) //next branch of LRU tree
+		begin
+			LRU_bits = j;
+			check = j;
+			a = 0;
+			for(k = 0; k < $clog2(associativity); k = k + 1) //final branch of LRU tree (the actual block)
+			begin
+				if(a > associativity-2) //if (a) is greater than the associativity, go to line 50
+					break;
+				check[a] = block_select[$clog2(associativity) - 1 - k]; //set the check[a] to the selected block value
+				if(check[a] % 2 === 0) //if value is even
+				begin
+					a = 2 * a + 1; // go right
+				end
 
-    end
+				else //value must be odd
+				begin
+					a = 2 * a + 2; //go left
+				end
+			end
+			//$display("Before delay: ", LRU_bits);
+			#0;
+			//$display("After delay: ", LRU_bits);
+			if(returned ===  check || debug) //if the output value equals either the check value or debug
+			begin // display the evicted value
+				//$displayb("\nblock select: ", block_select);
+				//$displayb("LRU bits: ", j);
+				//$displayb("should be: ", check);
+				$displayb("Evicted: ", returned);
+			end
+			else //(returned !==  check || debug) //the output value does not equal the check value or debug
+			begin // display and compare the results to each other
+				$displayb("\nblock select: ", block_select);
+				$displayb("LRU bits: ", j);
+				$displayb("should be: ", check);
+				$displayb("Returned: ", returned);
+			end
+		end
+	end
+	$display("Finished.");
+end
+
+
 endmodule
