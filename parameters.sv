@@ -24,10 +24,10 @@ reg [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] ta
 reg [i_size - 1 : 0]address;
 wire [d_size - 1 : 0]byte_select;
 wire [11- 1 : 0]index;
-wire [46: 0]tag;
+wire [15: 0]tag;
 string translator;
 
-  struct {
+ typedef struct {
     int tag[15];
     int protocol[8];
     int PLRU;

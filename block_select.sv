@@ -11,7 +11,7 @@ parameter integer a_size = 8;
 
 input [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0]tag_array;
 input [i_size - 1 : c_size - a_size + d_size] tag;
-output reg [$clog2(a_size) - 1 : 0] block_select;
+output reg [$clog2(a_size) - 1 : 0] block_select; //way 
 
 integer i;
 integer g1;

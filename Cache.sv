@@ -42,16 +42,16 @@ address_parse #(.instruction_size(i_size), .data_lines(d_size), .capacity(c_size
 block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_array[index], block_select);
 update_LRU #(.a_size(a_size)) uL (block_select, tag_array[index][max_array : max_array - a_size + 1], returned);
 
-//assign tag_array[index][max_array : max_array - a_size + 1] = returned; 
+assign tag_array[index][max_array : max_array - a_size + 1] = returned; 
 //assign tag_array[index][(protocol + i_size - c_size + a_size - d_size) * (block_select + 1) - protocol : (protocol + i_size - c_size + a_size - d_size) * block_select] = 
 
-initial
+/* initial
 begin
 
 	//#1
 
 
 
-end
+end */
 
 endmodule
