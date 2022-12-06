@@ -25,17 +25,23 @@ reg [i_size - 1 : 0]address;
 wire [d_size - 1 : 0]byte_select;
 wire [11- 1 : 0]index;
 wire [46: 0]tag;
-
+string translator;
 
   struct {
-    int tag_info[10];
-    int index_info[10];
-    int bit_select[10];
+    int tag[15];
+    int protocol[8];
+    int PLRU;
     
   } cache_data;
 
+int BusOp;
+string snoop_text_rslt;
+//int address;
+//int SnoopResult;
+
 enum{READ=0,WRITE,L1_READ,SNOOP_INVAL,SNOOPED_RD,SNOOP_WR,
 		SNOOP_RDWITM,CLR=8,PRINT=9}command; //commands
+enum{M=0,E,S,I}MESI_states;
 
 
 
