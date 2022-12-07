@@ -176,12 +176,12 @@ endtask */
 
 task debug_print();
 
-$display("----debug printinggggg----");
-$write("tag: %16b",tag);
-$write(" | ");
-$write("index: %b",index);
-$write(" | ");
-$write("byteselect: %b",byte_select);
+	$display("----debug printinggggg----");
+	$write("tag: %16b",tag);
+	$write(" | ");
+	$write("index: %b",index);
+	$write(" | ");
+	$write("byteselect: %b",byte_select);
 
 
 
@@ -249,14 +249,12 @@ endtask : GetSnoopResult
 
 
 task Cache_stat(int cache_read, int cache_write, int cache_hit, int cache_miss);
-$write("Number of Read: %d", cache_read);
-$write(" | ");
-$write("Number of Writes: %d", cache_write);
-$write(" | ");
-$write("Number of Hits: %d", cache_hit);
-$write(" | ");
-$write("Number of Miss: %d", cache_miss);
-$write("\n");
+	$display("Number of Reads: %d", cache_read);
+	$display("Number of Writes: %d", cache_write);
+	$display("Number of Hits: %d", cache_hit);
+	$display("Number of Misses: %d", cache_miss);
+	$display("Cache Hit Ratio: %d", (cache_hit / (cache_hit + cache_miss)));
+
 
 
 endtask
