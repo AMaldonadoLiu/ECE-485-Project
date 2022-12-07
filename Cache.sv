@@ -45,7 +45,7 @@ reg [max_array : max_array - a_size + 1] returned; // ??
 
 address_parse #(.instruction_size(i_size), .data_lines(d_size), .capacity(c_size), .associativity(a_size)) a_parse (instruction, tag, index, byte_select);
 block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_info[index].tag, tag, block_select);
-//update_LRU #(.a_size(a_size)) uL (block_select, tag_array[index][max_array : max_array - a_size + 1], returned);
+update_LRU #(.a_size(a_size)) uL (block_select, tag_info[index], returned);
 
 //assign tag_array[index][max_array : max_array - a_size + 1] = returned; 
 //assign tag_array[index][(protocol + i_size - c_size + a_size - d_size) * (block_select + 1) - protocol : (protocol + i_size - c_size + a_size - d_size) * block_select] = 
@@ -53,10 +53,7 @@ block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_s
 /*initial
 begin
 
-	//#1
-	if(hit === 1)
-	begin
-		for(int i = 0; i < a_size; i = i + 1)
+
 			
 
 
