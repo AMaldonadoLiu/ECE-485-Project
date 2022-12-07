@@ -1,4 +1,4 @@
-module cache(command, instruction, tag_array, hit, bus_op_out, common, snoop_result, L2_L1);
+module cache(command, instruction, hit, miss, bus_op_out, common, snoop_result, L2_L1);
 /*This module takes in the command, tag_array, and output 
 **the bus operation
 **the snoop_result
