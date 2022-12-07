@@ -21,7 +21,7 @@ output reg miss;
 
 always @*
 begin
-	//$display("Here I am.");
+
 	for(int i = 0; i < a_size; i = i + 1)
 	begin 
 		if(tag_array[i] === tag && MESI[i] !== 0) // check if we have tag in cache while checking we're not in invalidate state
@@ -35,7 +35,6 @@ begin
 			hit = 0;
 			miss = 1;
 		end
-		//$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
 	end
 
 end
