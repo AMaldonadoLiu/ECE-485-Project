@@ -31,19 +31,19 @@ output [1:0] snoop_result; //update snoop_result
 output [1:0] L2_L1; // this is for communication between the L1 and L2
 int temp_index=36; //delete later
 
-cache_data tag_info[(c_size - $clog2(a_size)) - d_size];
+cache_data tag_info[2 ** (c_size - $clog2(a_size)) - d_size];
 
 
 
 
-wire [i_size - c_size + $clog2(a_size) - d_size - 1 :0] tag; //tag bits
+reg [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0] tag; //tag bits
 wire [(c_size - $clog2(a_size)) - d_size - 1 : 0] index; // num of index bits
 wire [d_size - 1 : 0] byte_select; //num of byte_select bits
 reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select (ways)
 reg [a_size - 2 : 0] returned; // temp variable to hold data for tag_info.PLRU
 
 
-address_parse #(.instruction_size(i_size), .data_lines(d_size), .capacity(c_size), .associativity(a_size)) a_parse (instruction, tag, index, byte_select);
+address_parse #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size)) a_parse (instruction, tag, index, byte_select);
 block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_info[index].tag, tag, block_select);
 update_LRU #(.a_size(a_size)) uL (block_select, tag_info[index].PLRU, returned);
 
@@ -53,11 +53,13 @@ update_LRU #(.a_size(a_size)) uL (block_select, tag_info[index].PLRU, returned);
 always @*
 begin
 	tag_info[index].PLRU = 5;
-	block_select = 0;
+	tag_info[index].tag[0] = 5;
+	tag = 5;
 	while(returned[0] === 1'bx)
 	begin
 		#1
 		$display("stuck: ", returned[0]);
+		$display(block_select);
 		$display(index);
 	end
 	
