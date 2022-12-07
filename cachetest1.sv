@@ -201,9 +201,9 @@ task cmd_translator(input [3:0]cmd,output string cpu_cmd);
 	
 	case(cmd)
 	READ:
-	begin:
+	begin
 	cpu_cmd = "read";
-	read++;
+	read= read +1;
 	end
 	WRITE: 
 	begin 
