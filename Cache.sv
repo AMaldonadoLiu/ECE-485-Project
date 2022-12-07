@@ -33,7 +33,7 @@ int temp_index=36; //delete later
 
 
 
-wire [i_size - c_size + $clog2(a_size) - c_size - d_size - 1 :0] tag; //tag bits
+wire [i_size - c_size + $clog2(a_size) - d_size - 1 :0] tag; //tag bits
 wire [(c_size - $clog2(a_size)) - d_size - 1 : 0] index; // num of index bits
 wire [d_size - 1 : 0] byte_select; //num of byte_select bits
 reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select??
