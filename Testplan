@@ -1,16 +1,16 @@
 1.check that we can parse the instruction into the tag, index and byte select
-   address bits = ?
-   Number of byte select bits = ?
-   Number of index bits = ?
-   Number of tag bits = ?
+   address bits = 32
+   Number of byte select bits = 6
+   Number of index bits = 15 (capacity bits minus associativity minus byte select bits)
+   Number of tag bits = 5
    
 2.check that the miss turns into a hit when using the same instruction (with different byte selects)
 
 3.check that the LRU updates correctly
-   0 - Move left, 1 - Move Right
+   0 - Move Right, 1 - Move Left
    
 4.check that we can select the correct one to evict
-   0 - Move Right, 1- Move Left
+   0 - Move Left, 1- Move Right
    
 5.check that mesi updates correctly
    for the MESI protocol, we will have
