@@ -8,24 +8,26 @@ parameter integer protocol = 2;
 parameter integer a_size = 8;
 
 
-
-input [c_size - d_size - $clog2(a_size) - 1 : 0] tag_array[a_size];
-input [c_size - d_size - $clog2(a_size) - 1: 0] tag;
+input [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0] tag_array[a_size];
+input [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0] tag;
 output reg [$clog2(a_size) - 1 : 0] block_select; //way 
 
 integer i;
 
 
-always @(tag)
+always @(*)
 begin
 	for(i = 0; i < a_size; i = i + 1)
 	begin
+		$display(tag_array[i]);
+		$display(tag);
 		if(tag_array[i] === tag)
 		begin
 			block_select = i;
 			break;
 		end
 	end
+	$display("this is the block select: ", block_select);
 end
 
 endmodule
