@@ -1,3 +1,5 @@
+import mypkg::*;
+
 module cache(command, instruction, hit, miss, bus_op_out, common, snoop_result, L2_L1);
 /*This module takes in the command, tag_array, and output 
 **the bus operation
@@ -17,18 +19,19 @@ parameter integer max_array = a_size + (protocol + i_size - c_size + $clog2(a_si
 
 input integer command; // command from trace file 
 input [i_size - 1 : 0] instruction;
-input [1:0] bus_op_in;
 
 // inout [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
 int i=0;
-inout reg [15:0]tag_array[i];
 input common;
 
 output hit;
+output miss;
 output [1:0] bus_op_out; //bus operation commands 
 output [1:0] snoop_result; //update snoop_result 
 output [1:0] L2_L1; // this is for communication between the L1 and L2
 int temp_index=36; //delete later
+
+cache_data tag_info[(c_size - $clog2(a_size)) - d_size];
 
 
 
@@ -41,20 +44,23 @@ reg [max_array : max_array - a_size + 1] returned; // ??
 
 
 address_parse #(.instruction_size(i_size), .data_lines(d_size), .capacity(c_size), .associativity(a_size)) a_parse (instruction, tag, index, byte_select);
-//block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_array[index], block_select);
+block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_info[index].tag, tag, block_select);
 //update_LRU #(.a_size(a_size)) uL (block_select, tag_array[index][max_array : max_array - a_size + 1], returned);
 
-	reg [31:0] tag_array[(c_size - $clog2(a_size)) - d_size - 1:0][a_size-1:0];
 //assign tag_array[index][max_array : max_array - a_size + 1] = returned; 
 //assign tag_array[index][(protocol + i_size - c_size + a_size - d_size) * (block_select + 1) - protocol : (protocol + i_size - c_size + a_size - d_size) * block_select] = 
 
-/* initial
+/*initial
 begin
 
 	//#1
+	if(hit === 1)
+	begin
+		for(int i = 0; i < a_size; i = i + 1)
+			
 
 
 
-end */
+end*/ 
 
 endmodule
