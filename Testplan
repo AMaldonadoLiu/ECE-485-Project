@@ -1,6 +1,11 @@
 1. check that we can parse the instruction into the tag, index and byte select
+   address bits = ?
+   Number of byte select bits = ?
+   Number of index bits = ?
+   Number of tag bits = ?
 2. check that the miss turns into a hit when using the same instruction (with different byte selects)
 3. check that the LRU updates correctly
+   0 - left, 1 - Right
 4. check that we can select the correct one to evict
 5. check that mesi updates correctly
 6. enter differing instructions to test the miss and hits, and make sure it all works together.
