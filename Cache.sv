@@ -39,25 +39,35 @@ cache_data tag_info[(c_size - $clog2(a_size)) - d_size];
 wire [i_size - c_size + $clog2(a_size) - d_size - 1 :0] tag; //tag bits
 wire [(c_size - $clog2(a_size)) - d_size - 1 : 0] index; // num of index bits
 wire [d_size - 1 : 0] byte_select; //num of byte_select bits
-reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select??
-reg [max_array : max_array - a_size + 1] returned; // ??
+reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select (ways)
+reg [a_size - 2 : 0] returned; // temp variable to hold data for tag_info.PLRU
 
 
 address_parse #(.instruction_size(i_size), .data_lines(d_size), .capacity(c_size), .associativity(a_size)) a_parse (instruction, tag, index, byte_select);
 block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_info[index].tag, tag, block_select);
-update_LRU #(.a_size(a_size)) uL (block_select, tag_info[index], returned);
+update_LRU #(.a_size(a_size)) uL (block_select, tag_info[index].PLRU, returned);
 
 //assign tag_array[index][max_array : max_array - a_size + 1] = returned; 
 //assign tag_array[index][(protocol + i_size - c_size + a_size - d_size) * (block_select + 1) - protocol : (protocol + i_size - c_size + a_size - d_size) * block_select] = 
 
-/*initial
+always @*
 begin
+	tag_info[index].PLRU = 5;
+	block_select = 0;
+	while(returned[0] === 1'bx)
+	begin
+		#1
+		$display("stuck: ", returned[0]);
+		$display(index);
+	end
+	
+	tag_info[index].PLRU = returned;
+	$display("we did it! ",tag_info[index].PLRU);
 
-=
 			
 
 
 
-end*/ 
+end 
 
 endmodule
