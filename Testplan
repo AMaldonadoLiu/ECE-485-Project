@@ -1,7 +1,7 @@
 1.check that we can parse the instruction into the tag, index and byte select
    address bits = 32
    Number of byte select bits = 6
-   Number of index bits = 15 (capacity bits minus associativity minus byte select bits)
+   Number of index bits = 21 (capacity bits minus associativity minus byte select bits)
    Number of tag bits = 5
    
 2.check that the miss turns into a hit when using the same instruction (with different byte selects)
