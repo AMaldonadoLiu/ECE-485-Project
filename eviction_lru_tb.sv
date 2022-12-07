@@ -1,16 +1,21 @@
+
 module eviction_lru_tb;
 
 parameter integer associativity = 8;
+integer i;
 integer j;
 integer k;
 integer a = 0;
 
 integer debug = 0;
 //size of output and inputs
+reg [associativity - 2 : 0] returned;
 reg [associativity - 2 : 0] LRU_bits;
 reg [$clog2(associativity) - 1 : 0] block_select;
 reg [$clog2(associativity) - 1 : 0] check;
+reg [associativity - 2 : 0] temp = 0;
 
+int num_wrong = 0;
 
 eviction_lru #(.associativity(associativity)) test(block_select, LRU_bits);
 
@@ -29,11 +34,13 @@ begin
 			check[2-k] = LRU_bits[a]; //set the check[a] to the selected block value
 			if(LRU_bits[a] % 2 === 0) //if value is even
 			begin
-				a = 2 * a + 1; // go left
+				check[2-k] = 1;
+				a = 2 * a + 2; // go right
 			end
-				else //value must be odd
+			else //value must be odd
 			begin
-				a = 2 * a + 2; //go right
+				check[2-k] = 0;
+				a = 2 * a + 1; //go left
 			end
 		end
 		//$display("Before delay: ", LRU_bits);
@@ -48,6 +55,7 @@ begin
 		end
 		else //(returned !==  check || debug) //the output value does not equal the check value or debug
 		begin // display and compare the results to each other
+			num_wrong++;
 			$displayb("\nLRU bits input: ", LRU_bits);
 			$displayb("LRU bits actual: ", j);
 			$display("should be: ", check);
