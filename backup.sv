@@ -97,9 +97,9 @@ DATA_CacheReadCounter++ ;
 DATA_Address_Valid (Index,Tag,Hit,Data_ways);
 if (Hit == 1)
     begin
-    DATA_CacheHitCounter++ ;
-    UpdateLRUBits_data(Index, Data_ways );
-    L1_DATA_Cache[Index][Data_ways].MESI_bits = (L1_DATA_Cache[Index][Data_ways].MESI_bits == Exclusive) ? Shared : L1_DATA_Cache[Index][Data_ways].MESI_bits ;
+       DATA_CacheHitCounter++ ;
+       UpdateLRUBits_data(Index, Data_ways );
+       L1_DATA_Cache[Index][Data_ways].MESI_bits = (L1_DATA_Cache[Index][Data_ways].MESI_bits == Exclusive) ? Shared : L1_DATA_Cache[Index][Data_ways].MESI_bits ;
     end
 else
    begin
