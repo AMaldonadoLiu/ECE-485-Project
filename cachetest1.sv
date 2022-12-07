@@ -13,7 +13,7 @@ reg[63:0] read_address;
 
 reg hit;
 reg miss; 
-bit MESI[8];
+bit MESI[WAY];
 
 
 /* typedef struct {logic v; logic vld;} bit_rec;
