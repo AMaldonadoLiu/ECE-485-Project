@@ -89,3 +89,39 @@ $fclose(TRACE);
 
 $finish;
 end
+
+//Read Data From L1 Cache
+
+task ReadDataFromL1DataCache ( logic [Tag_bits-1 :0] Tag, logic [Index_bits-1:0] Index, logic x); 
+DATA_CacheReadCounter++ ;
+DATA_Address_Valid (Index,Tag,Hit,Data_ways);
+if (Hit == 1)
+    begin
+    DATA_CacheHitCounter++ ;
+    UpdateLRUBits_data(Index, Data_ways );
+    L1_DATA_Cache[Index][Data_ways].MESI_bits = (L1_DATA_Cache[Index][Data_ways].MESI_bits == Exclusive) ? Shared : L1_DATA_Cache[Index][Data_ways].MESI_bits ;
+    end
+else
+   begin
+   DATA_CacheMissCounter++ ;
+   NotValid = 0;
+   If_Invalid_DATA (Index , NotValid , Data_ways );
+if (NotValid)
+   begin
+   DATA_Allocate_CacheLine(Index,Tag, Data_ways);
+   UpdateLRUBits_data(Index, Data_ways );
+   L1_DATA_Cache[Index][Data_ways].MESI_bits = Exclusive; 
+     if (x==1)
+        $display("Read from L2 address %d'h%h" ,Address_bits,Address);
+   end
+else 
+   begin
+   Eviction_DATA(Index, Data_ways);
+   DATA_Allocate_CacheLine(Index, Tag, Data_ways);
+   UpdateLRUBits_data(Index, Data_ways );
+   L1_DATA_Cache[Index][Data_ways].MESI_bits = Exclusive; 
+     if (x==1)
+        $display("Read from L2 address %d'h%h" ,Address_bits,Address);
+   end
+end
+endtask
