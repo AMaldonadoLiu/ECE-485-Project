@@ -1,57 +1,63 @@
-module update_LRU(block_select, LRU_bits, returned);
-parameter associativity = 8;
+import mypkg::*;
+
+module cache(command, instruction, hit, miss, bus_op_out, common, snoop_result, L2_L1);
+/*This module takes in the command, tag_array, and output 
+**the bus operation
+**the snoop_result
+**and L2_L1
+
+*/
+//this uses powers of 2
+parameter integer i_size = 32; 
+parameter integer c_size = 24;
+parameter integer d_size = 6;
+parameter integer protocol = 2; 
+
+//this one is in bits
+parameter integer a_size = 8;
+parameter integer max_array = a_size + (protocol + i_size - c_size + $clog2(a_size) - d_size) * a_size - 2;
+
+input integer command; // command from trace file 
+input [i_size - 1 : 0] instruction;
+
+// inout [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
+int i=0;
+input common;
+
+output hit;
+output miss;
+output [1:0] bus_op_out; //bus operation commands 
+output [1:0] snoop_result; //update snoop_result 
+output [1:0] L2_L1; // this is for communication between the L1 and L2
+int temp_index=36; //delete later
+
+cache_data tag_info[(c_size - $clog2(a_size)) - d_size];
 
 
-output reg [associativity - 2 : 0]returned; //size of the output (returned value)
-
-input [associativity - 2 : 0]LRU_bits; // size of LRU bits
-input [$clog2(associativity) - 1 : 0]block_select; //size of each block (based on log_2 calculation of associativity, log_2(8))
-
-int i = 0;
-int a = 0;
-int b = 0;
 
 
+wire [i_size - c_size + $clog2(a_size) - d_size - 1 :0] tag; //tag bits
+wire [(c_size - $clog2(a_size)) - d_size - 1 : 0] index; // num of index bits
+wire [d_size - 1 : 0] byte_select; //num of byte_select bits
+reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select??
+reg [max_array : max_array - a_size + 1] returned; // ??
 
 
-always @(LRU_bits)
+address_parse #(.instruction_size(i_size), .data_lines(d_size), .capacity(c_size), .associativity(a_size)) a_parse (instruction, tag, index, byte_select);
+block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_info[index].tag, tag, block_select);
+update_LRU #(.a_size(a_size)) uL (block_select, tag_info[index].PLRU, returned);
+
+//assign tag_array[index][max_array : max_array - a_size + 1] = returned; 
+//assign tag_array[index][(protocol + i_size - c_size + a_size - d_size) * (block_select + 1) - protocol : (protocol + i_size - c_size + a_size - d_size) * block_select] = 
+
+/*initial
 begin
-	a = 0;
-	b = 0;
-	returned = 0;
 
-	for(i = 0; i < associativity - 1; i = i + 1)
-	begin
-		if(i == a) // if true
-		begin
-			//$display("I made it here."); //the value made it to it's specific block location
-			returned[i] = block_select[$clog2(associativity) - 1 - b]; //output the value from that same block location
-			if(block_select[$clog2(associativity) - 1 - b]%2 == 0) //if the selected block is even
-			begin
-				a = 2 * a + 1; //go left
-			end
-		
-			else //if the selected block is odd
-			begin
-				a = 2 * a + 2; // go right
-			end
-			b = b + 1; //increment (b) for so we can select the next 1 or 0 for the next.
-		end
+=
 			
-		else //if the value is not true, 
-		begin
-			returned[i] = LRU_bits[i]; //output the value from that specific LRU bit, which will be a temp value
-
-		end
-
-
-		
-		
-	end
-
-end 
 
 
 
+end*/ 
 
 endmodule
