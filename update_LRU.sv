@@ -10,13 +10,8 @@ input [$clog2(associativity) - 1 : 0]block_select; //size of each block (based o
 int i = 0;
 int a = 0;
 int b = 0;
-int enable = 0;
 
-reg [associativity - 2 : 0]temp;
-reg [associativity - 2 : 0]final_value;
 
-//assign temp[a] = block_select[$clog2(associativity) - 1 - i];
-//assign returned = temp;
 
 
 always @(LRU_bits)
@@ -43,25 +38,19 @@ begin
 			b = b + 1; //increment (b) for so we can select the next 1 or 0 for the next.
 		end
 			
-		else //if the value is not true (line 30), 
+		else //if the value is not true, 
 		begin
 			returned[i] = LRU_bits[i]; //output the value from that specific LRU bit, which will be a temp value
-			//$display("using temp");
+
 		end
-		//$display(returned, " ", i);
+
 
 		
 		
 	end
-	//returned = temp;
-	//returned = final_value;
+
 end 
 
-always @*
-begin
-	//$display("a, block select: ", a, " " , block_select[$clog2(associativity) - 1]);
-	//$display("returned: " , returned);
-end
 
 
 
