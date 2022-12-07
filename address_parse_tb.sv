@@ -2,9 +2,9 @@ module address_parse_tb;
 
 //parameters for memory size and organization (in bits used to represent them)
 //instruction size
-parameter integer i_size = 16;
+parameter integer i_size = 20;
 //capacity size
-parameter integer c_size = 10;
+parameter integer c_size = 12;
 //associativity (not in bits)
 parameter integer a_size = 8;
 //data size
@@ -19,12 +19,12 @@ integer debug = 0;
 //define address and individual section sizes
 reg [i_size - 1 : 0]address;
 wire [d_size - 1 : 0]byte_select;
-wire [(c_size - $clog2(a_size)) - 1 : 0]index;
-wire [i_size - c_size + $clog2(a_size) - d_size - 1 : 0]tag;
+wire [(c_size - $clog2(a_size) - d_size) - 1 : 0]index;
+wire [i_size - (c_size - $clog2(a_size) - d_size) - d_size - 1 : 0]tag;
 
 
 //instantiate the module using out memory and organization inputs
-address_parse #(.instruction_size(i_size), .capacity(c_size), .data_lines(d_size), .associativity(a_size)) temp(address, tag, index, byte_select);
+address_parse #(.i_size(i_size), .c_size(c_size), .d_size(d_size), .a_size(a_size)) temp(address, tag, index, byte_select);
 
 initial
 begin
@@ -35,8 +35,9 @@ begin
 	begin
 		//assign value to address
 		address = i;
+		#1
 		//check that the values we get back from the module are correct
-		if((byte_select !== address[d_size - 1 : 0] || index !== address[(c_size - $clog2(a_size)) + d_size - 1 : d_size] || tag !== address[i_size - (c_size - $clog2(a_size)) - d_size + d_size + (c_size - $clog2(a_size)) - 1 : d_size + (c_size - $clog2(a_size))]) || debug)
+		if((byte_select !== address[d_size - 1 : 0] || index !== address[(c_size - $clog2(a_size) - d_size) + d_size - 1 : d_size] || tag !== address[i_size - (c_size - $clog2(a_size)) - d_size + d_size + (c_size - $clog2(a_size)) - 1 : d_size + (c_size - $clog2(a_size))]) || debug)
 		begin
 			//if not, display the error information
 			$display("\n\nincorrect:");
