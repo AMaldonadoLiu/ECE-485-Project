@@ -13,10 +13,10 @@ integer k;
 integer l;
 integer m;
 integer n;
-reg [c_size - d_size - $clog2(a_size) - 1: 0] tag;
+reg [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1: 0] tag;
 reg [$clog2(a_size) - 1 : 0] correct;
 
-reg [c_size - d_size - $clog2(a_size) - 1: 0] tag_array[a_size];
+reg [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1: 0] tag_array[a_size];
 reg [$clog2(a_size) - 1 : 0] block_select;
 
 block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_array, tag, block_select);
