@@ -19,10 +19,11 @@ integer i;
 
 always @(*)
 begin
+	//loop through all of the tag array and figure out if any of them match tag
 	for(i = 0; i < a_size; i = i + 1)
 	begin
-		$display(tag_array[i]);
-		$display(tag);
+		//$display(tag_array[i]);
+		//$display(tag);
 		if(tag_array[i] === tag)
 		begin
 			block_select = i;
