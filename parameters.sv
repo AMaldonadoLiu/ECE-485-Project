@@ -28,8 +28,8 @@ wire [15: 0]tag;
 string translator;
 
  typedef struct {
-    int tag[15];
-    int protocol[8];
+	 reg [i_size - c_size - d_size + $clog2(a_size): 0] tag[a_size];
+	 reg [protocol - 1: 0]protocol[a_size];
     int PLRU;
     
   } cache_data;
