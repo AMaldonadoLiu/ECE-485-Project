@@ -10,7 +10,7 @@ input [instruction_size - 1: 0]address;
 
 //the size of the output section arrays
 output [data_lines - 1 : 0]byte_select;
-output [(capacity - associativity) - 1 : 0]index;
+output [(c_size - $clog2(a_size)) - d_size - 1 : 0]index;
 output [instruction_size - data_lines - capacity + associativity - 1 : 0]tag;
 
 //assign different sections of the data to each output
