@@ -1,64 +1,76 @@
-module MESI(input cmd, input index, input snoopResult, input hit);
-enum{Pr_Rd,Pr_Wr};
-enum{M,E,S,I};
-integer mesi;
-integer curr_state;
-integer next_state;
+import mypkg::*;
+module MESI( cmd,snoopResult,block_select,way, hit,snoopResultout,Busopt_out,L2_L1,mesiReturned);
 
-parameter cmd;
-parameter index; 
-parameter snoopResult;
-parameter hit;
+input reg cmd;
+input reg snoopResult;
+input reg block_select;
+input reg hit;
+input reg way;
+output reg snoopResultout;
+output reg Busopt_out;
+output reg L2_L1;
+output reg mesiReturned;
+//input reg hit=1;
+enum{READ=0,WRITE,L1_READ,SNOOP_INVAL,SNOOPED_RD,SNOOP_WR,
+		SNOOP_RDWITM,CLR=8,PRINT=9}command; //commands
+cache_data mesiState;
 
-always 
+always @ (cmd)
 begin
-case(hit)
+	case(hit)
 	
 	M:
 		begin
-			curr_state = M;
-			if(Pr_Rd)
-				curr_state = M; //Read to the  block Cache Hit
-			else if(Pr_Wr)
-				curr_state = M; // write to block Cache Hit			
+			mesiState.protocol_bits = M;
+			if(cmd == READ || cmd ==L1_READ || cmd == WRITE )
+			begin
+				mesiState.protocol_bits = mesi_bits.M; //assign mesi ststus
+			end
 			
 		end
 	
 	E:
 		begin
-			curr_state = E;
-			if(Pr_Rd)
-				curr_state = E;
-			else if(Pr_Wr)
-				curr_state = M;
-		
+			if(cmd == READ)
+			begin
+				mesiState.protocol_bits = E;
+			end
+			else if(cmd == WRITE)
+			begin
+				mesiState.protocol_bits = M;
+			end
 		end
 		
 	S:
 		begin
-			curr_state = S;
-			if(Pr_Rd)
-				curr_state = S;
-			else if(Pr_Wr)
-				curr_state = M;
+			if(cmd == READ)
+				mesiState.protocol_bits = S;
+			else if(cmd == WRITE)
+				mesiState.protocol_bits = M;
 	
 		end
 	I:
 		begin
-			curr_state = I;
-			if(Pr_Rd) begin
-				//if other cache have valid copy 
-				//ask Getsnoopresult fucntion if it's hit ot miss
-				if(HIT or HITM)begin
-					curr_state = S;
-				else:
-					curr_state = E;
+			if(cmd == READ) 
+			begin
+				if(snoopResult == HIT|| snoopResult == HITM)
+				begin
+					mesiState.protocol_bits = S;
 				end
-			else if(Pr_Wr)
-				curr_state = M;
-
+				else if(snoopResult == NOHIT)
+				begin
+					mesiState.protocol_bits = S;
+				//if other cache have valid copy 
+				end
+			end
+			else if(cmd == WRITE)
+			begin
+				mesiState.protocol_bits = M;
+			end
 
 		end
-	end
+	endcase
+	$display("finished");
+end
 
 endmodule
