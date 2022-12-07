@@ -19,8 +19,6 @@ parameter integer d_size = 6; // data_line size
 parameter integer protocol = 2; // how many bits for protocol (MESI)
 parameter integer a_size = 8; //ways
 
-reg [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
-
 reg [i_size - 1 : 0]address;
 wire [d_size - 1 : 0]byte_select;
 wire [11- 1 : 0]index;
@@ -28,9 +26,9 @@ wire [15: 0]tag;
 string translator;
 
  typedef struct {
-	 reg [i_size - c_size - d_size + $clog2(a_size): 0] tag[a_size];
+	 reg [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0] tag[a_size];
 	 reg [protocol - 1: 0]protocol_bits[a_size];
-	 reg [protocol-1 : 0]PLRU;
+	 reg [a_size-2 : 0]PLRU; //subtract 2 because - 1 for array to 0 and -1 for the equation for PLRU bits
     
   } cache_data;
 int read = 0;
