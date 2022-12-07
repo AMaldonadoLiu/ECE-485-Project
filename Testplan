@@ -1,3 +1,4 @@
+For everything, we test them exhaustively for an address size of 16, so we still have a large number of cases, but it is something that is able to be simulated in a reasonable amount of time.
 1.check that we can parse the instruction into the tag, index and byte select
    address bits = 32
    Number of byte select bits = 6
@@ -8,9 +9,11 @@
 
 3.check that the LRU updates correctly
    0 - Move Right, 1 - Move Left
+   we can manually check the values for a smaller number of test cases to make sure out checking algorithm works, and then we can increase the associativity to the actual size
    
 4.check that we can select the correct one to evict
    0 - Move Left, 1- Move Right
+   we can manually check the values for a smaller number of test cases to make sure out checking algorithm works, and then we can increase the associativity to the actual size
    
 5.check that mesi updates correctly
    for the MESI protocol, we will have
