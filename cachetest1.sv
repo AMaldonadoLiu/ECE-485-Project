@@ -200,8 +200,16 @@ endtask
 task cmd_translator(input [3:0]cmd,output string cpu_cmd);
 	
 	case(cmd)
-	READ: cpu_cmd = "read";
-	WRITE: cpu_cmd = "write";
+	READ:
+	begin:
+	cpu_cmd = "read";
+	read++;
+	end
+	WRITE: 
+	begin 
+	cpu_cmd = "write";
+	write++;
+	end
 	L1_READ: cpu_cmd = "L1_Instruct";
 	SNOOP_INVAL: cpu_cmd ="SNOOP Invalidate";
 	SNOOPED_RD: cpu_cmd = "SNOOPED_RD Rq";

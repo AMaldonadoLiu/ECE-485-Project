@@ -13,11 +13,11 @@ parameter NOHIT = `NOHIT;
 bit[1:0]final_final_snoop;
 
 //using bits
-parameter integer i_size = 32;
-parameter integer c_size = 24;
-parameter integer d_size = 6;
-parameter integer protocol = 2;
-parameter integer a_size = 8;
+parameter integer i_size = 32; //instruction size
+parameter integer c_size = 24; // capacity size
+parameter integer d_size = 6; // data_line size
+parameter integer protocol = 2; // how many bits for protocol (MESI)
+parameter integer a_size = 8; //ways
 
 reg [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
 
@@ -33,6 +33,10 @@ string translator;
     int PLRU;
     
   } cache_data;
+int read = 0;
+int write = 0;
+int cacheMiss=0;
+int CacheHIT=0;
 
 int BusOp;
 string snoop_text_rslt;
