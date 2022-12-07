@@ -29,8 +29,8 @@ string translator;
 
  typedef struct {
 	 reg [i_size - c_size - d_size + $clog2(a_size): 0] tag[a_size];
-	 reg [protocol - 1: 0]protocol[a_size];
-    int PLRU;
+	 reg [protocol - 1: 0]protocol_bits[a_size];
+	 reg [protocol-1 : 0]PLRU;
     
   } cache_data;
 int read = 0;
