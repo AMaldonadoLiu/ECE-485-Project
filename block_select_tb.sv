@@ -5,37 +5,60 @@ parameter integer d_size = 3;
 parameter integer protocol = 2;
 
 //this one is in bits
-parameter integer a_size = 2;
+parameter integer a_size = 4;
 
 integer i;
 integer j;
-reg [i_size - 1 : c_size - a_size + d_size] temp;
+integer k;
+integer l;
+integer m;
+integer n;
+reg [c_size - d_size - $clog2(a_size) - 1: 0] tag;
+reg [$clog2(a_size) - 1 : 0] correct;
 
-reg [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array;
+reg [c_size - d_size - $clog2(a_size) - 1: 0] tag_array[a_size];
 reg [$clog2(a_size) - 1 : 0] block_select;
 
-block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_array, block_select, temp);
+block_selector  #(.i_size(i_size), .d_size(d_size), .c_size(c_size), .a_size(a_size), .protocol(protocol)) selector (tag_array, tag, block_select);
 
 
 
 initial
 begin
-	for(i = 0; i < a_size; i = i + 1)
+	for(i = 0; i < 2 ** (c_size - d_size - $clog2(a_size)); i = i + 1)
 	begin
-		for(j = 0; j < 2 ** (protocol + i_size - c_size + a_size - d_size); j = j + 1)
+		tag = i;
+		for(j = 0; j < 2 ** (c_size - d_size - $clog2(a_size)); j = j + 1)
 		begin
-			tag_array = 0;
-			tag_array[(protocol + i_size - c_size + a_size - d_size) * (i + 1) - 1 -: (protocol + i_size - c_size + a_size - d_size)] = j;
-			temp = tag_array[(protocol + i_size - c_size + a_size - d_size) * (i + 1) - protocol -: c_size - a_size + d_size];
-			#1
-			if(block_select !== temp && temp[(protocol + i_size - c_size + a_size - d_size) * (i + 1) - protocol -: protocol])
+			tag_array[0] = j;
+			for(k = 0; k < 2 ** (c_size - d_size - $clog2(a_size)); k = k + 1)
 			begin
-				$display("\n\nincorrect:");
-				$displayh("input: ", tag_array, "\nblock_select: ", block_select);
-				$displayh("\nShould be: \nblock_select:", temp);
+				tag_array[1] = k;
+				for(l = 0; l < 2 ** (c_size - d_size - $clog2(a_size)); l = l + 1) 
+				begin
+					tag_array[2] = l;
+					for(m = 0; m < 2 ** (c_size - d_size - $clog2(a_size)); m = m + 1)
+					begin
+						tag_array[3] = m;
+						for(n = 0; n < a_size; n = n + 1)
+						begin
+							if(tag_array[n] === tag)
+							begin
+								correct = n;
+								break;
+							end
+						end
+						
+						if(block_select !== correct)
+						begin
+							$display("\n\nincorrect:");
+							$displayh("input: ", tag_array, "\ntag: ", tag);
+							$displayh("\nShould be:", correct);
+						end
+					end
+				end
 			end
 		end
-		
 	end
 	$display("finished");
 end
