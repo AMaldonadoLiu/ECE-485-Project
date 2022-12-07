@@ -1,11 +1,13 @@
 module block_selector(tag_array, tag, block_select);
-parameter integer i_size = 32;
-parameter integer c_size = 24;
-parameter integer d_size = 6;
-parameter integer protocol = 2;
-
-//this one is in bits
+//parameters for memory size and organization (in bits used to represent them)
+//instruction size
+parameter integer i_size = 20;
+//capacity size
+parameter integer c_size = 12;
+//associativity (not in bits)
 parameter integer a_size = 8;
+//data size
+parameter integer d_size = 6;
 
 
 input [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0] tag_array[a_size];
@@ -27,7 +29,7 @@ begin
 			break;
 		end
 	end
-	$display("this is the block select: ", block_select);
+	//$display("this is the block select: ", block_select);
 end
 
 endmodule
