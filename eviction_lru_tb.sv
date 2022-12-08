@@ -2,6 +2,7 @@
 module eviction_lru_tb;
 
 parameter integer associativity = 8;
+parameter integer protocol = 2;
 integer i;
 integer j;
 integer k;
@@ -14,10 +15,11 @@ reg [associativity - 2 : 0] LRU_bits;
 reg [$clog2(associativity) - 1 : 0] block_select;
 reg [$clog2(associativity) - 1 : 0] check;
 reg [associativity - 2 : 0] temp = 0;
+reg [protocol - 1 : 0] protocol_bits;
 
 int num_wrong = 0;
 
-eviction_lru #(.associativity(associativity)) test(block_select, LRU_bits);
+eviction_LRU #(.a_size(associativity)) test(block_select, LRU_bits, 1);
 
 
 initial
@@ -46,16 +48,25 @@ begin
 		//$display("Before delay: ", LRU_bits);
 		#1
 		//$display("After delay: ", LRU_bits);
-		if(block_select ===  check || debug) //if the output value equals either the check value or debug
+
+		if(debug === 1)
+		begin
+			$displayb("\nLRU bits input: ", LRU_bits);
+			$displayb("LRU bits actual: ", j);
+			$display("should be: ", check);
+			$display("block select: ", block_select);
+		end
+		else if(block_select ===  check || debug) //if the output value equals either the check value or debug
 		begin // display the evicted value
 			//$displayb("\nblock select: ", block_select);
 			//$displayb("LRU bits: ", j);
 			//$displayb("should be: ", check);
-			$display("Evicted: ", block_select);
+			//$display("Evicted: ", block_select);
 		end
 		else //(returned !==  check || debug) //the output value does not equal the check value or debug
 		begin // display and compare the results to each other
 			num_wrong++;
+			$display("Incorrect");
 			$displayb("\nLRU bits input: ", LRU_bits);
 			$displayb("LRU bits actual: ", j);
 			$display("should be: ", check);
