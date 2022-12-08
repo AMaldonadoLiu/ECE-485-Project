@@ -29,6 +29,12 @@ begin
 
 	for(i = 0; i < a_size - 1; i = i + 1)
 	begin
+		if(LRU_bits[i] === 1'bx || block_select[a] === 1'bx)
+		begin
+			returned = 0;
+			break;
+		end
+
 		if(i == a)
 		begin
 			//$display("I made it here.");
