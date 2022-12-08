@@ -8,7 +8,7 @@ parameter integer c_size = 12;
 parameter integer a_size = 8;
 //data size
 parameter integer d_size = 6;
-	
+
 parameter integer protocol = 2;
 
 
