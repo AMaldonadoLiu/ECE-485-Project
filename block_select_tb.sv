@@ -68,6 +68,7 @@ begin
 								break;
 							end
 						end
+						#1
 						
 						//if we get the wrong way
 						//I do understand it will hold the previous value when the tag doesn't match any of the tag_array, but we will use the hit_miss function to determine whether we use the block_select
@@ -79,7 +80,7 @@ begin
 						end
 						else if (debug === 1)
 						begin
-							$displayh("input: ", tag_array, "\ntag: ", tag);
+							$displayh("\ntag: ", tag);
 							$displayh("\nShould be:", correct);
 							$displayh("Output: ", block_select);
 						end
