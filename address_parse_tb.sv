@@ -42,7 +42,7 @@ begin
 			//if not, display the error information
 			$display("\n\nincorrect:");
 			$displayh("input: ", address, "\nbyte_select: ", byte_select, "\nindex: ", index, "\ntag: ", tag);
-			$displayh("\nShould be: \nbyte_select:", address[d_size - 1 : 0], "\nindex: ", address[(c_size - $clog2(a_size)) + d_size - 1 : d_size], "\ntag: ", address[i_size - (c_size - $clog2(a_size)) - d_size + d_size + (c_size - $clog2(a_size)) - 1 : d_size + (c_size - $clog2(a_size))]); 
+			$displayh("\nShould be: \nbyte_select: ", address[d_size - 1 : 0], "\nindex: ", address[(c_size - $clog2(a_size)) + d_size - 1 : d_size], "\ntag: ", address[i_size - (c_size - $clog2(a_size)) - d_size + d_size + (c_size - $clog2(a_size)) - 1 : d_size + (c_size - $clog2(a_size))]); 
 		end
 		
 
