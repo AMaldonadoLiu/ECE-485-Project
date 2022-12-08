@@ -15,7 +15,7 @@ output [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0]tag;
 
 //assign different sections of the data to each output
 assign byte_select = address[d_size - 1 : 0];
-assign index = address[(c_size - $clog2(a_size)) + d_size - 1 : d_size];
+assign index = address[(c_size - $clog2(a_size) - d_size ) + d_size - 1 : d_size];
 assign tag = address[i_size - 1 : (c_size - $clog2(a_size)) + d_size];
 
 endmodule
