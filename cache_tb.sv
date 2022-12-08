@@ -42,6 +42,6 @@ wire [d_size - 1 : 0] byte_select; //num of byte_select bits
 reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select (ways)
 reg [max_array : max_array - a_size + 1] returned;
 
-cache testing(0, 5000, hit, miss, bus_op_out, 0, snoop_result, L2_L1);
+cache testing(3, 5000, hit, miss, bus_op_out, 0, snoop_result, L2_L1);
 
 endmodule
