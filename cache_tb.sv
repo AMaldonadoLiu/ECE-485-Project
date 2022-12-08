@@ -30,7 +30,7 @@ reg miss;
 reg [1:0] bus_op_out; //bus operation commands 
 reg [1:0] snoop_result; //update snoop_result 
 reg [1:0] L2_L1; // this is for communication between the L1 and L2
-int temp_index=36; //delete later
+
 
 
 
