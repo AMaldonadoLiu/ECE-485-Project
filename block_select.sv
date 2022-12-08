@@ -8,6 +8,8 @@ parameter integer c_size = 12;
 parameter integer a_size = 8;
 //data size
 parameter integer d_size = 6;
+	
+parameter integer protocol = 2;
 
 
 input [i_size - (c_size - d_size - $clog2(a_size)) - d_size - 1 : 0] tag_array[a_size];
