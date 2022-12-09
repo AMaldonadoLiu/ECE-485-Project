@@ -1,3 +1,5 @@
+import mypkg::*;
+
 module hit_miss(tag, /*index,*/ tag_array, MESI, hit, miss, block_select);
 
 //this uses powers of 2
@@ -20,12 +22,20 @@ output reg [$clog2(a_size) - 1 : 0] block_select;
 
 always @*
 begin
-	
-	//$display("hit_miss: ", tag);
+	#2
+	$display("MESI: ", MESI);
 	//$display("Here I am.");
 	for(int i = 0; i < a_size; i = i + 1)
-	begin 
-		if(tag_array[i] === tag && MESI[i] !== 0)
+	begin
+		if(MESI[i] == 0)
+		begin
+			hit = 0;
+			miss = 1;
+			//$display(" got a miss so far: ", MESI[i]);
+			block_select = i;
+			break;
+		end		
+		else if(MESI[i] !== 0 && tag_array[i] === tag)
 		begin
 			hit = 1;
 			miss = 0;
@@ -33,18 +43,7 @@ begin
 			break;
 		end
 
-		else
-		begin
-			hit = 0;
-			miss = 1;
-			//$display(" got a miss so far: ", MESI[i]);
-			if(MESI[i] === 0 || MESI[i][0] === 1'bx)
-			begin
-				//$display("Here to update block_select");
-				block_select = i;
-				break;
-			end
-		end
+		
 		//$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
 	end
 
