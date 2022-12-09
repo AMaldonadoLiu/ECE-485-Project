@@ -43,9 +43,9 @@ begin
 			
 		if(MESI[i] === 0 || MESI[i][0] === 1'bx)
 		begin
-			$display("MESI: ", MESI[i]);
+			//$display("MESI: ", MESI[i]);
 			block_select = i;
-			$display("block_select: ", block_select);
+			//$display("block_select: ", block_select);
 			break;
 		end
 		
