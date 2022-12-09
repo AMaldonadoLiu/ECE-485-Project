@@ -2,7 +2,7 @@ import mypkg::*;
 
 module MESI( cmd,snoopResult,MESI_bits,miss,snoopResultout,busop_out,L2_L1,mesiReturned);
 
-input reg cmd;
+input reg [3:0] cmd;
 input reg [1:0] snoopResult;
 //input reg block_select;
 input reg [1:0] MESI_bits;
@@ -18,44 +18,68 @@ output reg [1:0] snoopResultout;
 enum{READ=0,WRITE,L1_READ,SNOOP_INVAL,SNOOPED_RD,SNOOP_WR,
 		SNOOP_RDWITM,CLR=8,PRINT=9}command; //commands
 
-always @ (cmd)
+always @ (*)
 begin
-	case(MESI_bits)
 	
+	if(MESI_bits === 2'bxx)
+	begin
+		MESI_bits = 0;
+	end
+	busop_out = 2'bxx;
+	snoopResultout = 2'bxx;
+	case(MESI_bits)
+
 	M:
 		begin
-			if(cmd === READ || cmd === L1_READ)
+			if(cmd === 0 || cmd === 3)
 			begin
 
-				if(snoopResult === HIT || snoopResult === HITM)
+				if(miss === 1 && (snoopResult === HIT || snoopResult === HITM))
 				begin
+					busop_out = BWRITE;
 					busop_out = BREAD;
 					mesiReturned = S;
 				end
 
+				else if(miss === 1 && (snoopResult === NOHIT || snoopResult === NOHIT-1))
+				begin
+					busop_out = BWRITE;
+					busop_out = BREAD;
+					mesiReturned = E;
+				end
+				
 				else
 					mesiReturned = M;
 				L2_L1 = SENDLINE;
 				
 			end
 
-			else if(cmd === WRITE)
+			else if(cmd === 1)
 			begin
 
 				if(snoopResult === HIT || snoopResult === HITM)
 				begin
 					L2_L1 = EVICTLINE;
+					busop_out = BRWIM;
 
 				end
-				busop_out = BRWIM;
-				L2_L1 = SENDLINE;
+
+				else
+				begin
+					L2_L1 = SENDLINE;
+					busop_out = BINVAL;
+				end
 				
 				mesiReturned = M;
 
-				L2_L1 = GETLINE;
+				if(miss === 1)
+					L2_L1 = GETLINE;
+
+				//L2_L1 = GETLINE;
+				//since it is write through only once from L1, this means that since we hit and are modified, we don't GETLINE
 			end
 
-			else if(cmd === SNOOPED_RD && miss != 1)
+			else if(cmd === 4 && miss != 1)
 			begin
 				snoopResultout = HITM;
 				L2_L1 = GETLINE;
@@ -63,21 +87,31 @@ begin
 				mesiReturned = S;
 			end
 
-			else if((cmd === SNOOP_RDWITM && miss != 1) || cmd === CLR)
+			else if(cmd === 6 && miss != 1)
 			begin
 				snoopResultout = HITM;
 				L2_L1 = EVICTLINE;
 				busop_out = BWRITE;
 				mesiReturned = I;
 			end	
-				
+	
+			else if(cmd === 8)
+			begin
+				L2_L1 = EVICTLINE;
+				busop_out = BWRITE;
+				mesiReturned = I;
+			end
 
-			
+			else
+				mesiReturned = M;
+		
+				
+	
 		end
 	
 	E:
 		begin
-			if(cmd === READ || cmd === L1_READ)
+			if(cmd === 0 || cmd === 2)
 			begin
 				if(miss === 1 && (snoopResult === HIT || snoopResult === HITM))
 				begin
@@ -86,29 +120,42 @@ begin
 
 					mesiReturned = S;
 				end
-				else	
+				else if(miss === 1 && (snoopResult === NOHIT || snoopResult === NOHIT+1))
+				begin
+					L2_L1 = INVALLINE;
+					busop_out = BREAD;
 					mesiReturned = E;
+				end
 				L2_L1 = SENDLINE;
 
 			end
 
 
-			else if(cmd === WRITE)
+			else if(cmd === 1)
 			begin
 				if(miss === 1 && (snoopResult === HIT || snoopResult === HITM))
 				begin
 					L2_L1 = INVALLINE;
 					busop_out = BRWIM;
-					L2_L1 = SENDLINE;
+					
 				end
 
+
+				else if(miss === 1 && (snoopResult === NOHIT || snoopResult === NOHIT+1))
+				begin
+					L2_L1 = INVALLINE;
+					busop_out = BRWIM;
+					//L2_L1 = SENDLINE;
+				end
+
+				L2_L1 = SENDLINE;
 				mesiReturned = M;
 				L2_L1 = GETLINE;
 				
 			end
 
 			
-			else if(cmd === SNOOPED_RD)
+			else if(cmd === 5 && miss === 0)
 			begin
 
 				mesiReturned = S;
@@ -116,27 +163,30 @@ begin
 			end
 
 
-			else if(cmd === SNOOP_RDWITM || cmd === CLR)
+			else if((cmd === 6 && miss === 0) || cmd === 8)
 			begin
 				L2_L1 = INVALLINE;
 				mesiReturned = I;
 			end
+
+			else
+				mesiReturned = E;
 
 
 		end
 		
 	S:
 		begin
-			if(cmd === READ)
+			if(cmd === 0 || cmd === 2)
 			begin
-				if(miss === 1 && (snoopResult === 1 || snoopResult === 2))
+				if(miss === 1 && (snoopResult ===  HIT || snoopResult === HITM))
 				begin
 					L2_L1 = EVICTLINE;
 					busop_out = BREAD;
 					mesiReturned = S;
 					L2_L1 = SENDLINE;
 				end
-				else if( miss === 1 && (snoopResult === 3 || snoopResult === 4))
+				else if( miss === 1 && (snoopResult === NOHIT || snoopResult === NOHIT + 1))
 				begin
 					L2_L1 = EVICTLINE;
 					busop_out = BREAD;
@@ -147,13 +197,14 @@ begin
 				else
 				begin
 					mesiReturned = S;
+					L2_L1 = SENDLINE;
 				end
 				
 
 			end
 
 
-			else if(cmd === WRITE)
+			else if(cmd === 1)
 			begin
 				if(miss === 1)
 				begin
@@ -162,21 +213,30 @@ begin
 					L2_L1 = SENDLINE;
 				end
 				
+				else
+					busop_out = BINVAL;
 				mesiReturned = M;
 
 				L2_L1 = GETLINE;
 				
 			end
 
+			else if(cmd === 3 && miss === 0)
+			begin
+				L2_L1 = INVALLINE;
+				mesiReturned = I;
+				
+			end
+
 			
-			else if(cmd === SNOOPED_RD)
+			else if(cmd === 4 && miss === 0)
 			begin
 				snoopResultout = HIT;
 				mesiReturned = S;
 
 			end
 			
-			else if(cmd === SNOOP_WR)
+			else if(cmd === 5 && miss === 0)
 			begin
 				snoopResultout = HIT;
 				mesiReturned = I;
@@ -184,54 +244,69 @@ begin
 			end
 
 
-			else if(cmd === SNOOP_RDWITM)
+			else if(cmd === 6 && miss === 0)
 			begin
 				snoopResultout = HIT;
 				mesiReturned = I;
 			end
 			
-			else if(cmd === CLR)
+			else if(cmd === 8)
 			begin
 				mesiReturned = I;
 			end
+	
+			else
+				mesiReturned = S;
 				
 	
 		end
+
+
 	I:
 		begin
-			if(cmd === READ) 
+			if(cmd === 0 || cmd === 2) 
 			begin
 				if(snoopResult == HIT|| snoopResult == HITM)
 				begin
-					busop_out = BREAD
+					busop_out = BREAD;
 					mesiReturned = S;
 				end
 
 				else if(snoopResult == NOHIT)
 				begin
 
-					busop_out = BREAD
+					busop_out = BREAD;
 					mesiReturned = E;
 
 				end
+				L2_L1 = SENDLINE;
 			end
 
 
-			else if(cmd === WRITE)
+			else if(cmd === 1) //not sure if this is needed. Assuming it is a write allocate
 			begin
 				if(snoopResult === HIT || snoopResult === HITM)
 				begin 
-					busop_out = BINVAL;
+					busop_out = BRWIM;
 				end
-				
+				L2_L1 = SENDLINE;
 				mesiReturned = M;
-			end
+				L2_L1 = GETLINE;
+			end	
 
+
+			else
+				mesiReturned = I;
 
 
 		end
+
 	endcase
-	$display("finished");
+	if(busop_out === 2'bxx)
+		busop_out = 2'bzz;
+	if(snoopResultout === 2'bxx)
+		snoopResultout = 2'bzz;
+	//$display("finished");
 end
 
 endmodule
