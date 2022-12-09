@@ -23,18 +23,16 @@ reg [a_size - 2 : 0]final_value;
 
 always @(*)
 begin
+	while(LRU_bits[0] === 1'bx || block_select[0] === 1'bx)
+	begin
+		#1;
+	end
 	a = 0;
 	b = 0;
 	returned = 0;
 
 	for(i = 0; i < a_size - 1; i = i + 1)
 	begin
-		if(LRU_bits[i] === 1'bx || block_select[a] === 1'bx)
-		begin
-			returned = 0;
-			break;
-		end
-
 		if(i == a)
 		begin
 			//$display("I made it here.");
@@ -50,6 +48,27 @@ begin
 			end
 			b = b + 1;
 		end
+
+		else if(LRU_bits[i] === 1'bx /*|| block_select[a] === 1'bx*/)
+		begin
+			returned[i] = 0;
+		end
+
+		/*else if(i == a)
+		begin
+			//$display("I made it here.");
+			returned[i] = block_select[$clog2(a_size) - 1 - b];
+			if(block_select[$clog2(a_size) - 1 - b]%2 == 0)
+			begin
+				a = 2 * a + 1;
+			end
+		
+			else
+			begin
+				a = 2 * a + 2;
+			end
+			b = b + 1;
+		end*/
 			
 		else
 		begin
