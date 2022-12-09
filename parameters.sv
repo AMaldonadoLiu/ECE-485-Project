@@ -18,11 +18,13 @@ parameter integer c_size = 24; // capacity size
 parameter integer d_size = 6; // data_line size
 parameter integer protocol = 2; // how many bits for protocol (MESI)
 parameter integer a_size = 8; //ways
+parameter integer tag_bits = i_size - (c_size - d_size - $clog2(a_size)) - d_size;
+parameter integer index_bits = c_size - d_size -$clog2(a_size); 
 
 reg [i_size - 1 : 0]address;
 wire [d_size - 1 : 0]byte_select;
-wire [11- 1 : 0]index;
-wire [15: 0]tag;
+wire [index_bits - 1 : 0]index;
+wire [tag_bits - 1: 0]tag;
 string translator;
 
  typedef struct {
