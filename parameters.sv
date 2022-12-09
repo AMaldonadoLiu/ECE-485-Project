@@ -43,7 +43,11 @@ string snoop_text_rslt;
 
 enum{READ=0,WRITE,L1_READ,SNOOP_INVAL,SNOOPED_RD,SNOOP_WR,
 		SNOOP_RDWITM,CLR=8,PRINT=9}command; //commands
-enum{M=0,E,S,I}MESI_states;
+enum{M=3,E=1,S=2,I=0}MESI_states;
+
+enum{BREAD=1,BWRITE=2,BINVAL=3,BRWIM=4} bus_operations;
+
+enum{GETLINE=1,SENDLINE=2,INVALLINE=3,EVICTLINE=4} L2_L1_messages;
 
 
 
