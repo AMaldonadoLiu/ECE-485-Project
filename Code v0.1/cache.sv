@@ -22,6 +22,7 @@ input [i_size - 1 : 0] instruction;
 input reg debug;
 
 // inout [a_size + (protocol + i_size - c_size + a_size - d_size) * a_size - 2: 0] tag_array[2 ** (c_size - a_size)];
+int counter = 0;
 int i=0;
 int flag = 0;
 
@@ -76,158 +77,162 @@ MESI mesi_protocol(command, temp_snoop, protocol_bits_temp, miss_temp, snoop_res
 
 always @(command, instruction)
 begin
-	if(debug == 1)
-	begin
-		$display("Starting --------------------\n\n");
-		$display("\nTag: ", tag_info[index].tag[block_select]);
-		$display("Index: ", index);
-		$display("PLRU: ",tag_info[index].PLRU);
-		$display("Snoop result ", snoop_result);
-	end
+		if(debug === 1)
+		begin//
+			//$display("Starting --------------------\n\n");
+			//$display("\nTag: ", tag_info[index].tag[block_select]);
+			//$display("Index: ", index);
+			//$display("PLRU: ",tag_info[index].PLRU);
+			//$display("Snoop result ", snoop_result);
+		end
 
-	while(instruction[0] === 1'bz)
-	begin
+		while(instruction[0] === 1'bz)
+		begin
 		
-		#1;
-		hit = 0;
-		miss = 0;
-	end
+			#1;
+			hit = 0;
+			miss = 0;
+		end
 
-	if(command == 8)
+		if(command == 8)
+		begin
+			for(int i = 0; i < 2 ** index_bits; i = i + 1)
+			begin
+				for(int j = 0; j < a_size; j = j + 1)
+				begin
+					tag_info[i].protocol_bits[j] = 2'b00;
+				//$display("tag prot: ", tag_info[i].protocol_bits[j]);
+				end
+			end
+		//$display("changed bits");
+		end
+	/*else
 	begin
 		for(int i = 0; i < 2 ** index_bits; i = i + 1)
-		begin
-			for(int j = 0; j < a_size; j = j + 1)
 			begin
-				tag_info[i].protocol_bits[j] = 2'b00;
-				//$display("tag prot: ", tag_info[i].protocol_bits[j]);
-			end
-		end
-		//$display("changed bits");
-	end
-	else
-	for(int i = 0; i < 2 ** index_bits; i = i + 1)
-		begin
-			for(int j = 0; j < a_size; j = j + 1)
-			begin
-				if(tag_info[i].protocol_bits[j] != 0)
+				for(int j = 0; j < a_size; j = j + 1)
 				begin
+					if(tag_info[i].protocol_bits[j] != 0)
+					begin
 
-					$display("tag prot: ", tag_info[i].protocol_bits[j]);
-					$display("tag: ", tag_info[i].tag[j], "index: ", i);
+						//$display("tag prot: ", tag_info[i].protocol_bits[j]);
+						//$display("tag: ", tag_info[i].tag[j], "index: ", i);
+					end
 				end
 			end
-		end
-	begin
-	block_select[0] = 1'bz;
-	instruction_temp[0] = 1'bz;
-	tag[0] = 1'bz;
-	index[0] = 1'bz;
-	#2
-	instruction_temp = instruction;
-	#2
+	end*/
+		block_select[0] = 1'bz;
+		instruction_temp[0] = 1'bz;
+		tag[0] = 1'bz;
+		index[0] = 1'bz;
+		#2
+		instruction_temp = instruction;
+		#2
 	
-	tag = tag_temp;
-	index = index_temp;
-	#1
-	block_select = block_select_temp;
-	while(returned[0] === 1'bx)
-	begin
-		#1;
-		//$display(miss);
-		//tag = tag_temp;
+		tag = tag_temp;
 		index = index_temp;
+		#1
 		block_select = block_select_temp;
-		/*$displayh("\nInstruction: ", instruction);
-		$display("Command: ", command);
-		$display("Tag: ", tag);
-		$display("index: ", index);
-		$display("stuck: ", returned[0]);
-		$display(block_select);
-		$display("temp_snoop: ", temp_snoop);*/
-	end
+		while(returned[0] === 1'bx)
+		begin
+			#1;
+			//$display(miss);
+			//tag = tag_temp;
+			index = index_temp;
+			block_select = block_select_temp;
+			/*$displayh("\nInstruction: ", instruction);
+			$display("Command: ", command);
+			$display("Tag: ", tag);
+			$display("index: ", index);
+			$display("stuck: ", returned[0]);
+			$display(block_select);
+			$display("temp_snoop: ", temp_snoop);*/
+		end
 
-	protocol_bits_temp = tag_info[index].protocol_bits[block_select];
+		protocol_bits_temp = tag_info[index].protocol_bits[block_select];
 		
-	#20;
+		#20;
 	//tag = tag_temp;
 	
-	if(hit_temp == 1 && (command == 0 || command == 1 || command == 2))
-	begin
-		$display("GOT A HIT WOOOOHOOOOOOOOO");
-		tag_info[index].PLRU = returned;
-		tag_info[index].protocol_bits[block_select] = mesi_return_temp;
-		hit = hit_temp;
-	end
-
-
-	else if(miss_temp == 1 && (command == 0 || command == 1 || command == 2))
-	begin
-		$display("\nTAG: ", tag);
-		$display("PLRU: ", returned);
-		$display("evicted: ", evict_block);
-		$display("block_select: ", block_select, "\n\n\n\n");
-		tag_info[index].PLRU = returned;
-		#1
-		$display("uno\n");
-		#1
-		miss = miss_temp;
-		#1
-		$display("dos\n");
-		#1
-		tag_info[index].tag[block_select] = tag;
-		$display("tres\n");
-		#1
-		tag_info[index].protocol_bits[block_select] = mesi_return_temp;
-		
-	end
-	#5
-
-	$display("I am after the miss\n\n\n");
-	
-	if(command != 0 && command != 1 && command != 2)
-	begin
-		hit = 0;
-		miss = 0;
-	end
-	
-	if(command === 3 || command === 4 || command === 5 || command === 6 || command === 7)
-	begin
-		#1
-		snoop_result = snoop_result_temp;
-		//if(
-	end
-
-	
-
-	if(command == 9)
-	begin
-		$display("got here");
-		for(i = 0; i < 2 ** index_bits; i = i + 1)
+		if(hit_temp == 1 && (command == 0 || command == 1 || command == 2))
 		begin
-			
-			for(int j = 0; j < a_size; j = j + 1)
-			begin
-				#1
-				//$display("\n\nProtocol bits", tag_info[index].protocol_bits[j]);
-				if(tag_info[index].protocol_bits[j] != 0 || tag_info[index].protocol_bits[j] != 2'bxx)
-				begin
-					if(flag == 0)
-					begin
-						$display("\n\nINDEX: \t", i);
-						$display("PLRU: \t", tag_info[index].PLRU);
-						flag = 1;
-					end
-					$write("Block: ", j);
-					$writeh("\tMESI: ", tag_info[index].protocol_bits[j], "\tTag: ", tag_info[index].tag[j], "\n");
-				end
-				flag = (j = a_size - 1) ? 0: flag;
-			end
+			//$display("GOT A HIT WOOOOHOOOOOOOOO");
+			tag_info[index].PLRU = returned;
+			tag_info[index].protocol_bits[block_select] = mesi_return_temp;
+			hit = hit_temp;
 		end
-	end
+
+
+		else if(miss_temp == 1 && (command == 0 || command == 1 || command == 2))
+		begin
+			//$display("\nTAG: ", tag);
+			//$display("PLRU: ", returned);
+			//$display("evicted: ", evict_block);
+			//$display("block_select: ", block_select, "\n\n\n\n");
+			tag_info[index].PLRU = returned;
+			#1
+			//$display("uno\n");
+			#1
+			miss = miss_temp;
+			#1
+			//$display("dos\n");
+			#1
+			tag_info[index].tag[block_select] = tag;
+			//$display("tres\n");
+			#1
+			tag_info[index].protocol_bits[block_select] = mesi_return_temp;
+		
+		end
+		#5
+
+		//$display("I am after the miss\n\n\n");
+	
+		if(command != 0 && command != 1 && command != 2)
+		begin
+			hit = 0;
+			miss = 0;
+		end
+	
+		if(command === 3 || command === 4 || command === 5 || command === 6 || command === 7)
+		begin
+			#1
+			snoop_result = snoop_result_temp;
+			//if(
+		end
+
+	
+
+		if(command == 9)
+		begin
+			counter = 0;
+			//$display("got here");
+			for(i = 0; i < 2 ** index_bits; i = i + 1)
+			begin
 			
-	end
-	if(debug == 1)
+				for(int j = 0; j < a_size; j = j + 1)
+				begin
+					//#1
+					//$display("\n\nProtocol bits", tag_info[index].protocol_bits[j]);
+					if(tag_info[i].protocol_bits[j] != 0 || tag_info[i].protocol_bits[j] != 2'bxx)
+					begin
+						if(flag == 0)
+						begin
+							$display("\n\nINDEX: \t", i);
+							$display("PLRU: \t", tag_info[i].PLRU);
+							flag = 1;
+						end
+						$write("Block: ", j);
+						$writeh("\tMESI: ", tag_info[i].protocol_bits[j], "\tTag: ", tag_info[i].tag[j], "\n");
+						counter++;
+					end
+					flag = (j = a_size - 1) ? 0: flag;
+				end
+			end
+			$display("counter: ", counter);
+		end
+			
+	
+	if(debug === 1)
 	begin
 		$display("\nTag: ", tag_info[index].tag[block_select]);
 		$display("Index: ", index);
