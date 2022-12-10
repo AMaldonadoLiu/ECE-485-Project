@@ -23,12 +23,12 @@ output reg [$clog2(a_size) - 1 : 0] block_select;
 always @*
 begin
 	//#1
-	for(int p = 0; p < a_size; p = p + 1)
+	/*for(int p = 0; p < a_size; p = p + 1)
 	begin
 		$display("MESI: ", MESI[p]);
 
 		$display("tag_array: ",tag_array[p]);
-	end
+	end*/
 	//$display("Here I am.");
 	for(int i = 0; i < a_size; i = i + 1)
 	begin
@@ -52,7 +52,7 @@ begin
 		//$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
 	end
 
-	$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
+	//$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
 
 end
 
