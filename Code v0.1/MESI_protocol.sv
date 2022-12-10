@@ -20,7 +20,7 @@ enum{READ=0,WRITE,L1_READ,SNOOP_INVAL,SNOOPED_RD,SNOOP_WR,
 
 always @ (*)
 begin
-	$display("snoop = ", snoopResult);
+	//$display("snoop = ", snoopResult);
 	if(MESI_bits === 2'bxx)
 	begin
 		MESI_bits = 0;
