@@ -36,7 +36,7 @@ reg [i_size - 1:0] read_address;
 
 integer data_file;
 integer valid_data;
-integer debug;
+integer debug = 0;
 integer data_command;
 
 integer hit_rate = 0;
@@ -66,7 +66,6 @@ begin
 
 data_command = CLR;
 read_address = 0;
-debug = 1;
 
 #50
  //look for file name
@@ -83,7 +82,7 @@ else
 //retrieved_file ="tracefileLRU.txt";//for testing! to remove later 
 //#10
 data_file = $fopen(retrieved_file, "r");//for testing! to remove later 
-debug =1;  //for testing! to remove later 
+//debug =1;  //for testing! to remove later 
 if(data_file == 0)
 	begin
 	$display("Unable to open file");
@@ -105,10 +104,11 @@ end
 while(!$feof(data_file))
 	begin
 //$display("Valid data: ", data_command);     //for testing
+	//data_command = 1'bz;
 	valid_data = $fscanf(data_file, "%d", data_command);
 	if(valid_data != 0)
 		begin
-		if(debug == 1)
+		if(debug === 1)
 			$display("Read command number: ", data_command);
 			
 		//send data into modules
@@ -136,7 +136,7 @@ while(!$feof(data_file))
 		if(data_command === 1)
 			num_write = num_write + 1;
 
-		if(debug == 1)
+		if(debug === 1)
 		begin
 			
 			$display("Read address: 0x%8h ", read_address);
@@ -180,6 +180,8 @@ while(!$feof(data_file))
 $fclose(data_file);
 
 Cache_stat(num_read, num_write, hit_rate, miss_rate);
+
+$finish;
 end
 	
 
@@ -304,12 +306,12 @@ task GetSnoopResult(input [i_size-1:0]address,
 endtask : GetSnoopResult
 
 
-task Cache_stat(int cache_read, int cache_write, int cache_hit, int cache_miss);
+task Cache_stat(real cache_read, real cache_write, real cache_hit, real cache_miss);
 	$display("\nNumber of Reads: %d", cache_read);
 	$display("Number of Writes: %d", cache_write);
 	$display("Number of Hits: %d", cache_hit);
 	$display("Number of Misses: %d", cache_miss);
-	$display("Cache Hit Ratio: %d", (cache_hit / (cache_hit + cache_miss)));
+	$display("Cache Hit Ratio: %f", cache_hit/(cache_hit + cache_miss));
 
 
 
