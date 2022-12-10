@@ -17,9 +17,9 @@ output [protocol - 1:0] snoop_result;
 
 assign snoop_result = byte_select[protocol - 1:0] === 0 ? HIT : byte_select[protocol -1:0] === 1 ? HITM : NOHIT;
 
-always @*
+/*always @*
 begin
 	$display("\n\n\n\nI am snoopy");
-end
+end*/
 
 endmodule
