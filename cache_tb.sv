@@ -27,25 +27,27 @@ reg common;
 
 reg hit;
 reg miss;
-reg [1:0] bus_op_out; //bus operation commands 
+reg [1:0] bus_op_out[busopsize]; //bus operation commands 
 reg [1:0] snoop_result; //update snoop_result 
-reg [1:0] L2_L1; // this is for communication between the L1 and L2
+reg [1:0] snoop_input;
+reg [1:0] L2_L1[busopsize]; // this is for communication between the L1 and L2
 
 reg [i_size - 1:0] read_address;
 
-
+integer out_file;
 integer data_file;
 integer valid_data;
-integer debug;
+integer debug = 0;
 integer data_command;
 
-integer hit_rate = 0;
-integer miss_rate = 0;
-integer num_read = 0;
-integer num_write = 0;
+real hit_rate = 0;
+real miss_rate = 0;
+real num_read = 0;
+real num_write = 0;
 integer silent = 0;
 
 string retrieved_file;
+string fileout;
 
 
 
@@ -57,7 +59,7 @@ string retrieved_file;
 //reg [$clog2(a_size) - 1 : 0] block_select; // num of block_select (ways)
 //reg [max_array : max_array - a_size + 1] returned;
 
-cache testing(data_command, read_address, hit, miss, bus_op_out, snoop_result, L2_L1, debug);
+cache testing(data_command, read_address, hit, miss, bus_op_out, snoop_input, snoop_result, L2_L1, silent, out_file);
 
 
 initial
@@ -66,7 +68,7 @@ begin
 
 data_command = CLR;
 read_address = 0;
-debug = 1;
+
 
 #50
  //look for file name
@@ -79,12 +81,25 @@ else
 	$display("No file name received");
 	$finish;
 	end 
+
+if($value$plusargs ("FILEOUT=%s", fileout))
+    $display("Received file name");
+else
+	begin
+	$display("No file name received");
+	$finish;
+	end 
 //open file
 //retrieved_file ="tracefileLRU.txt";//for testing! to remove later 
 //#10
 data_file = $fopen(retrieved_file, "r");//for testing! to remove later 
-debug =1;  //for testing! to remove later 
+out_file = $fopen(fileout, "w");
 if(data_file == 0)
+	begin
+	$display("Unable to open file");
+	$finish;
+	end
+if(out_file == 0)
 	begin
 	$display("Unable to open file");
 	$finish;
@@ -118,7 +133,7 @@ while(!$feof(data_file))
 		$display("No command read.");
 		$finish;
 		end
-
+	read_address[0] = 1'bz;
 	valid_data = $fscanf(data_file, "%h", read_address);
 	if(valid_data != 0)
 		begin
@@ -175,10 +190,59 @@ while(!$feof(data_file))
 		$display("No address read.");
 		$finish;
 		end
+	if(silent == 0)
+	begin
+		for(int p = 0; p < busopsize; p = p + 1)
+		begin
+			if(bus_op_out[p][0] === 1'bx)
+			begin
+				break;
+			end
+			else
+			$display("BusOp: %d, Address: %h, Snoop Input: %d\n", bus_op_out[p], read_address, snoop_input);
+			$fdisplay(out_file,"BusOp: %d, Address: %h, Snoop Input: %d\n",  bus_op_out[p], read_address, snoop_input);
+		end
+		for(int m = 0; m < busopsize; m = m + 1)
+		begin
+			if(L2_L1[m][0] === 1'bx)
+			begin
+				break;
+			end
+			else
+			$display("L2: %d %h\n", L2_L1[m], read_address);
+			$fdisplay(out_file,"L2: %d %h\n", L2_L1[m], read_address);
+		end
+		
+		if(snoop_result[0] != 1'bx)
+		begin
+			$display("Snooped Address: %h, Snoop Output: %d\n", read_address, snoop_result);
+			$fdisplay(out_file,"Snooped Address: %h, Snoop Output: %d\n", read_address, snoop_result);
+		end
+	end
+
 	end
 $fclose(data_file);
 
-Cache_stat(num_read, num_write, hit_rate, miss_rate);
+
+
+	$display("\nNumber of Reads: %d", num_read);
+	$display("Number of Writes: %d", num_write);
+	$display("Number of Hits: %d", hit_rate);
+	$display("Number of Misses: %d", miss_rate);
+if((hit_rate + miss_rate) != 0)
+	$display("Cache Hit Ratio: %f", (hit_rate / (hit_rate + miss_rate)));
+
+	$fdisplay(out_file,"\nNumber of Reads: %d", num_read);
+	$fdisplay(out_file,"Number of Writes: %d", num_write);
+	$fdisplay(out_file,"Number of Hits: %d", hit_rate);
+	$fdisplay(out_file,"Number of Misses: %d", miss_rate);
+	if((hit_rate + miss_rate) != 0)
+		$fdisplay(out_file,"Cache Hit Ratio: %f", (hit_rate / (hit_rate + miss_rate)));
+
+
+	$fclose(out_file);
+
+//Cache_stat(num_read, num_write, hit_rate, miss_rate);
 end
 	
 
