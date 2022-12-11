@@ -1,0 +1,5 @@
+We know that not all our data works properly. We had some issues with getting the eviction to work, specifically because of the way we coded things. It ended up that our modules used pieces that would cause other modules to run unintentionally. I was able to stop most of that from happening by using many temp variables, but that was one issue.
+
+Also, just a question that isn't time sensitive, our testbench would run forever whenever a file ended in a newline character, as many of your test cases did, do you have any idea why that is? at least from what I know, usually reading from a file throws away the new line character, though now that I think about it, was it because we were reading %d and %h from the file? As maybe that doesn't pick up a character that caused it to terminate.
+
+-Angelo Maldonado-Liu, Bendjy Faurestal, Willenton Bridges
