@@ -20,6 +20,8 @@ parameter integer protocol = 2; // how many bits for protocol (MESI)
 parameter integer a_size = 8; //ways
 parameter integer tag_bits = i_size - (c_size - d_size - $clog2(a_size)) - d_size;
 parameter integer index_bits = c_size - d_size -$clog2(a_size); 
+parameter integer busopsize = 3;
+
 
 reg [i_size - 1 : 0]address;
 wire [d_size - 1 : 0]byte_select;
