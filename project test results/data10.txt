@@ -1,0 +1,24 @@
+L2: 2 00000002
+
+L2: 1 00000002
+
+
+
+INDEX:           0
+PLRU:   0
+Block:           0  MESI: 3  Tag: 000
+BusOp: 2, Address: 0000003f, Snoop Input: 2
+
+L2: 1 0000003f
+
+
+
+INDEX:           0
+PLRU:   0
+Block:           0  MESI: 3  Tag: 000
+
+Number of Reads:          0
+Number of Writes:          1
+Number of Hits:          0
+Number of Misses:          1
+Cache Hit Ratio: 0.000000

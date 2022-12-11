@@ -1,0 +1,54 @@
+BusOp: 0, Address: 00000080, Snoop Input: x
+
+L2: 2 00000080
+
+L2: 1 00000080
+
+BusOp: 0, Address: 00200080, Snoop Input: x
+
+L2: 2 00200080
+
+L2: 1 00200080
+
+BusOp: 0, Address: 00400080, Snoop Input: x
+
+L2: 2 00400080
+
+L2: 1 00400080
+
+BusOp: 0, Address: 00600080, Snoop Input: x
+
+L2: 2 00600080
+
+L2: 1 00600080
+
+BusOp: 0, Address: 00800080, Snoop Input: x
+
+L2: 2 00800080
+
+L2: 1 00800080
+
+BusOp: 0, Address: 00a00080, Snoop Input: x
+
+L2: 2 00a00080
+
+L2: 1 00a00080
+
+BusOp: 0, Address: 00c00080, Snoop Input: x
+
+L2: 2 00c00080
+
+L2: 1 00c00080
+
+BusOp: 0, Address: 00e00080, Snoop Input: x
+
+L2: 2 00e00080
+
+L2: 1 00e00080
+
+
+Number of Reads:          0
+Number of Writes:          8
+Number of Hits:          0
+Number of Misses:          8
+Cache Hit Ratio: 0.000000

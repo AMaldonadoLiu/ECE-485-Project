@@ -1,0 +1,78 @@
+BusOp: 0, Address: 00000000, Snoop Input: x
+
+L2: 2 00000000
+
+L2: 1 00000000
+
+BusOp: 0, Address: 00200001, Snoop Input: x
+
+L2: 2 00200001
+
+L2: 1 00200001
+
+L2: 2 00400002
+
+L2: 1 00400002
+
+L2: 2 00600003
+
+L2: 1 00600003
+
+BusOp: 0, Address: 00800004, Snoop Input: x
+
+L2: 2 00800004
+
+L2: 1 00800004
+
+BusOp: 0, Address: 00a00005, Snoop Input: x
+
+L2: 2 00a00005
+
+L2: 1 00a00005
+
+L2: 2 00c00006
+
+L2: 1 00c00006
+
+L2: 2 00e00007
+
+L2: 1 00e00007
+
+BusOp: 3, Address: 00800003, Snoop Input: x
+
+L2: 2 00800003
+
+
+
+INDEX:           0
+PLRU: 109
+Block:           0  MESI: 3  Tag: 000
+Block:           1  MESI: 3  Tag: 001
+Block:           2  MESI: 3  Tag: 002
+Block:           3  MESI: 3  Tag: 003
+Block:           4  MESI: 3  Tag: 004
+Block:           5  MESI: 3  Tag: 005
+Block:           6  MESI: 3  Tag: 006
+Block:           7  MESI: 3  Tag: 007
+BusOp: 3, Address: 01000003, Snoop Input: x
+
+L2: 2 01000003
+
+
+
+INDEX:           0
+PLRU:   5
+Block:           0  MESI: 3  Tag: 000
+Block:           1  MESI: 3  Tag: 001
+Block:           2  MESI: 3  Tag: 002
+Block:           3  MESI: 3  Tag: 003
+Block:           4  MESI: 3  Tag: 004
+Block:           5  MESI: 3  Tag: 005
+Block:           6  MESI: 3  Tag: 006
+Block:           7  MESI: 3  Tag: 007
+
+Number of Reads:          0
+Number of Writes:         10
+Number of Hits:          2
+Number of Misses:          9
+Cache Hit Ratio: 0.181818

@@ -1,0 +1,64 @@
+BusOp: 1, Address: 00000000, Snoop Input: x
+
+L2: 2 00000000
+
+BusOp: 1, Address: 00200001, Snoop Input: x
+
+L2: 2 00200001
+
+BusOp: 1, Address: 00400002, Snoop Input: x
+
+L2: 2 00400002
+
+BusOp: 1, Address: 00600003, Snoop Input: x
+
+L2: 2 00600003
+
+BusOp: 1, Address: 00800004, Snoop Input: x
+
+L2: 2 00800004
+
+BusOp: 1, Address: 00a00005, Snoop Input: x
+
+L2: 2 00a00005
+
+BusOp: 1, Address: 00c00006, Snoop Input: x
+
+L2: 2 00c00006
+
+BusOp: 1, Address: 00e00007, Snoop Input: x
+
+L2: 2 00e00007
+
+
+
+INDEX:           0
+PLRU:  63
+Block:           0  MESI: 2  Tag: 000
+Block:           1  MESI: 2  Tag: 001
+Block:           2  MESI: 1  Tag: 002
+Block:           3  MESI: 3  Tag: 003
+Block:           4  MESI: 2  Tag: 004
+Block:           5  MESI: 2  Tag: 005
+Block:           6  MESI: 1  Tag: 006
+Block:           7  MESI: 1  Tag: 007
+L2: 2 01000000
+
+
+
+INDEX:           0
+PLRU:  23
+Block:           0  MESI: 2  Tag: 000
+Block:           1  MESI: 2  Tag: 001
+Block:           2  MESI: 1  Tag: 002
+Block:           3  MESI: 3  Tag: 003
+Block:           4  MESI: 2  Tag: 004
+Block:           5  MESI: 2  Tag: 005
+Block:           6  MESI: 1  Tag: 006
+Block:           7  MESI: 1  Tag: 007
+
+Number of Reads:          9
+Number of Writes:          1
+Number of Hits:          2
+Number of Misses:          9
+Cache Hit Ratio: 0.181818
