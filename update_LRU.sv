@@ -23,19 +23,21 @@ reg [a_size - 2 : 0]final_value;
 
 always @(*)
 begin
-	while(LRU_bits[0] === 1'bx || block_select[0] === 1'bx)
+	while(block_select[0] === 1'bz || block_select[0] === 1'bx)
 	begin
 		#1;
+		//$display("Big stuck.");
 	end
 	a = 0;
 	b = 0;
 	returned = 0;
+	//$display("Update LRU");
 
-	for(i = 0; i < a_size - 1; i = i + 1)
+	for(i = a_size -2; i >= 0; i = i - 1)
 	begin
-		if(i == a)
+		if(i == a_size - 2 - a)
 		begin
-			//$display("I made it here.");
+			//$display("I made it here: ", a, " ", i);
 			returned[i] = block_select[$clog2(a_size) - 1 - b];
 			if(block_select[$clog2(a_size) - 1 - b]%2 == 0)
 			begin
@@ -54,26 +56,12 @@ begin
 			returned[i] = 0;
 		end
 
-		/*else if(i == a)
-		begin
-			//$display("I made it here.");
-			returned[i] = block_select[$clog2(a_size) - 1 - b];
-			if(block_select[$clog2(a_size) - 1 - b]%2 == 0)
-			begin
-				a = 2 * a + 1;
-			end
-		
-			else
-			begin
-				a = 2 * a + 2;
-			end
-			b = b + 1;
-		end*/
 			
 		else
 		begin
 			returned[i] = LRU_bits[i];
 		end
+		
 			
 	end
 
