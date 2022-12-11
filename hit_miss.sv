@@ -22,12 +22,18 @@ output reg [$clog2(a_size) - 1 : 0] block_select;
 
 always @*
 begin
-	#2
-	$display("MESI: ", MESI);
-	//$display("Here I am.");
+	//$display("HITMISS");
+	//#1
+	/*for(int p = 0; p < a_size; p = p + 1)
+	begin
+		$display("MESI: ", MESI[p]);
+
+		$display("tag_array: ",tag_array[p]);
+	end*/
+	//$display("input tag: ", tag);
 	for(int i = 0; i < a_size; i = i + 1)
 	begin
-		if(MESI[i] == 0)
+		if(MESI[i] == 0 || MESI[i] === 1'bx ||| MESI[i] === 1'bz)
 		begin
 			hit = 0;
 			miss = 1;
@@ -37,6 +43,8 @@ begin
 		end		
 		else if(MESI[i] !== 0 && tag_array[i] === tag)
 		begin
+			//$display("tag is: ", tag, "\t and array is: ", tag_array[i]);
+			//$display("This one hit, ", i);
 			hit = 1;
 			miss = 0;
 			block_select = i;
@@ -44,8 +52,10 @@ begin
 		end
 
 		
-		//$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
+		//$display("Hit: ", hit, " Miss: ", miss, "i value: ", i, " \n\n\n");
 	end
+
+	//$display("Hit: ", hit, " Miss: ", miss, " \n\n\n");
 
 end
 
